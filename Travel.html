@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel & Photography | David Wu</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#F3F4F6',
+            muted: '#9CA3AF',
+            rose: { 400: '#FB7185', 500: '#F43F5E' }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- ECharts 用于交互地图 -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+
+  <style>
+    ::selection { background: #F43F5E; color: #FFFFFF; }
+
+    .bg-deep-space {
+      background-color: #050505;
+      background-image: radial-gradient(ellipse at 50% 0%, #111827 0%, #050505 70%);
+    }
+
+    .star-layer {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none; z-index: 0;
+    }
+    .stars-bg {
+      background-image: radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.8), transparent), radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.6), transparent), radial-gradient(1px 1px at 80% 30%, rgba(255,255,255,0.7), transparent), radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.5), transparent), radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.8), transparent);
+      background-size: 250px 250px;
+    }
+
+    .glass-panel {
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      transition: all 0.4s ease;
+    }
+    .glass-panel:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .photo-card {
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .photo-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .compare-box {
+      position: relative; user-select: none; touch-action: none; overflow: hidden;
+      --pos: 82%;
+    }
+    .compare-real-layer {
+      position: absolute; inset: 0;
+      clip-path: inset(0 0 0 var(--pos, 82%));
+    }
+    .compare-divider {
+      position: absolute; top: 0; bottom: 0; left: var(--pos, 82%); width: 2px;
+      background: #F43F5E;
+      box-shadow: 0 0 12px rgba(244, 63, 94, 0.6);
+      transform: translateX(-50%); pointer-events: none; z-index: 20;
+    }
+    .compare-handle {
+      position: absolute; top: 50%; left: var(--pos, 82%);
+      transform: translate(-50%, -50%); width: 32px; height: 32px;
+      border-radius: 9999px; background: rgba(5, 5, 5, 0.8);
+      border: 1px solid #F43F5E; color: #F43F5E;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.8); z-index: 25; pointer-events: none;
+    }
+  </style>
+</head>
+<body class="bg-deep-space text-ink antialiased min-h-screen flex flex-col relative font-sans overflow-x-hidden">
+
+  <div class="star-layer stars-bg"></div>
+
+  <!-- 顶部导航 -->
+  <header class="fixed top-6 left-0 right-0 z-50 flex justify-center pointer-events-none">
+    <nav class="pointer-events-auto flex items-center gap-1 p-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl transition-all duration-300 hover:bg-white/10">
+      <a href="main.html" class="flex items-center justify-center h-10 px-5 rounded-full hover:bg-white/10 transition-colors">
+        <span class="font-bold text-sm text-white tracking-wide">David Wu</span>
+      </a>
+      <div class="w-px h-5 bg-white/10 mx-1"></div>
+
+      <a href="career.html" class="group flex items-center h-10 px-3.5 rounded-full hover:bg-white/10 transition-colors">
+        <svg class="w-4 h-4 text-gray-400 group-hover:text-blue-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+        <span class="max-w-0 overflow-hidden whitespace-nowrap opacity-0 group-hover:max-w-[100px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-300 font-sans text-xs font-medium text-white">Career</span>
+      </a>
+
+      <a href="archive.html" class="group flex items-center h-10 px-3.5 rounded-full hover:bg-white/10 transition-colors">
+        <svg class="w-4 h-4 text-gray-400 group-hover:text-emerald-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+        <span class="max-w-0 overflow-hidden whitespace-nowrap opacity-0 group-hover:max-w-[100px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-300 font-sans text-xs font-medium text-white">Archive</span>
+      </a>
+
+      <!-- Travel Active -->
+      <a href="travel.html" class="group flex items-center h-10 px-3.5 rounded-full bg-white/10 transition-colors">
+        <svg class="w-4 h-4 text-rose-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        <span class="ml-2 whitespace-nowrap font-sans text-xs font-medium text-white">Travel</span>
+      </a>
+
+      <a href="homebar.html" class="group flex items-center h-10 px-3.5 rounded-full hover:bg-white/10 transition-colors">
+        <svg class="w-4 h-4 text-gray-400 group-hover:text-yellow-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14.5v6.5M8.5 21h7M19 4L12 14.5 5 4h14zM16.5 6.5h-9" /><path d="M18.5 2.5l-1.5 1.5" stroke-linecap="round"/><circle cx="17.5" cy="3.5" r="1" fill="currentColor"/></svg>
+        <span class="max-w-0 overflow-hidden whitespace-nowrap opacity-0 group-hover:max-w-[100px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-300 font-sans text-xs font-medium text-white">Bar</span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- 主体内容 -->
+  <main class="relative z-10 flex-grow w-full xl:w-[85vw] max-w-7xl mx-auto px-4 sm:px-6 pt-32 pb-24">
+    
+    <section class="mb-12 text-center md:text-left">
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white mb-4">
+        Travel & Photography
+      </h1>
+      <p class="text-gray-400 font-light text-lg">
+        Footprints across the globe, and frames captured along the way.
+      </p>
+    </section>
+
+    <!-- 交互式地图区域 -->
+    <section class="mb-16 relative">
+      <div class="glass-panel rounded-3xl p-2 sm:p-6 overflow-hidden">
+        <div id="world-map" class="w-full h-[450px] md:h-[600px] rounded-2xl"></div>
+      </div>
+      
+      <!-- 图例 -->
+      <div class="absolute bottom-6 left-8 flex flex-wrap gap-6 font-mono text-[11px] text-gray-400 bg-black/40 px-4 py-2 rounded-full border border-white/10 backdrop-blur-md">
+        <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500/80 shadow-[0_0_8px_#3B82F6]"></span>Visited</span>
+        <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#111827] border border-white/10"></span>Unvisited</span>
+        <span class="text-gray-500 italic hidden sm:inline">Click a highlighted location to reveal collections.</span>
+      </div>
+    </section>
+
+    <!-- 底部展开的相册区域 -->
+    <section id="destination-showcase" class="space-y-12"></section>
+
+  </main>
+
+  <!-- Lightbox 弹窗 -->
+  <div id="photo-lightbox" class="fixed inset-0 z-[100] hidden bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 sm:p-10" onclick="closeLightbox(event)">
+    
+    <!-- 内部的展示内容 -->
+    <div class="w-full h-full flex flex-col xl:flex-row gap-6 items-center justify-center pointer-events-none">
+      
+      <!-- 图片区（图片本身接管鼠标事件，背景不接管） -->
+      <div id="lb-media" class="flex-1 w-full h-full flex items-center justify-center overflow-hidden"></div>
+      
+      <!-- 参数区 -->
+      <div class="w-full xl:w-80 flex-shrink-0 glass-panel p-6 sm:p-8 rounded-2xl flex flex-col justify-between pointer-events-auto">
+        <div>
+          <div class="flex justify-between items-start mb-8">
+            <div>
+              <span class="font-mono text-xs text-rose-400 uppercase tracking-widest">Travel Log</span>
+              <h3 id="lb-title" class="text-xl font-semibold text-white mt-1"></h3>
+            </div>
+            <button onclick="closeLightbox(null, true)" class="text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 p-2 rounded-full transition">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+          </div>
+          
+          <div class="space-y-4 font-mono text-sm">
+            <div class="flex justify-between border-b border-white/10 pb-2"><span class="text-gray-500">Date</span> <span id="lb-date" class="text-white"></span></div>
+            <div class="flex justify-between border-b border-white/10 pb-2"><span class="text-gray-500">Camera</span> <span id="lb-camera" class="text-white"></span></div>
+            <div class="flex justify-between border-b border-white/10 pb-2"><span class="text-gray-500">Lens</span> <span id="lb-lens" class="text-white text-right"></span></div>
+            <div class="flex justify-between border-b border-white/10 pb-2"><span class="text-gray-500">Aperture</span> <span id="lb-aperture" class="text-white"></span></div>
+            <div class="flex justify-between border-b border-white/10 pb-2"><span class="text-gray-500">ISO</span> <span id="lb-iso" class="text-white"></span></div>
+          </div>
+        </div>
+        
+        <div id="lb-path" class="text-[10px] text-gray-600 break-all mt-8 font-mono"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-10 w-full max-w-3xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6 border-t border-white/5">
+    
+    <!-- 左侧：版权与访客统计 -->
+    <div class="flex flex-col md:flex-row items-center gap-2 md:gap-4 font-mono text-[11px] text-gray-500">
+      <span>© 2026 DAVID WU</span>
+      <span class="hidden md:inline text-gray-700">|</span>
+      <!-- 不蒜子统计 -->
+      <span id="busuanzi_container_site_pv" class="inline-flex items-center gap-1" style="display:inline-flex;">
+        Site Visits: <span id="busuanzi_value_site_pv" class="text-gray-300 font-medium">0</span>
+      </span>
+    </div>
+
+    <!-- 社交图标区 (对齐尺寸 22px / 正圆/角适配) -->
+    <div class="flex justify-center gap-6 items-center">
+      
+      <!-- Instagram -->
+      <a href="https://www.instagram.com/dwuag/" target="_blank" class="group text-gray-400 hover:text-[#E1306C] transition-colors duration-300" aria-label="Instagram">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="transform group-hover:scale-110 transition-transform duration-300">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+        </svg>
+      </a>
+
+      <!-- 知乎 (外部图标源 + 悬停变色 + 加载失败兜底) -->
+      <a href="https://www.zhihu.com/people/OperationGenoa" target="_blank" class="group relative inline-flex items-center justify-center w-[22px] h-[22px] transition-colors duration-300" aria-label="Zhihu">
+        <img
+          src="https://cdn.simpleicons.org/zhihu/9CA3AF"
+          alt="Zhihu"
+          class="w-[22px] h-[22px] object-contain opacity-100 group-hover:opacity-0 group-hover:scale-110 transition-all duration-300"
+          onerror="this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='inline-block';"
+        />
+        <img
+          src="https://cdn.simpleicons.org/zhihu/0084FF"
+          alt="Zhihu Hover"
+          class="w-[22px] h-[22px] object-contain absolute inset-0 opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 pointer-events-none"
+          onerror="this.style.display='none';"
+        />
+        <span class="hidden font-mono text-xs font-bold text-gray-400 group-hover:text-[#0084FF]">知</span>
+      </a>
+
+      <!-- LinkedIn -->
+      <a href="https://www.linkedin.com/in/dwuag/" target="_blank" class="group text-gray-400 hover:text-[#0A66C2] transition-colors duration-300" aria-label="LinkedIn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="transform group-hover:scale-110 transition-transform duration-300">
+          <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+        </svg>
+      </a>
+
+      <!-- Google Scholar (经典学士帽) -->
+      <a href="https://scholar.google.com.hk/citations?user=38uGpF8AAAAJ" target="_blank" class="group text-gray-400 hover:text-[#4285F4] transition-colors duration-300" aria-label="Google Scholar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="transform group-hover:scale-110 transition-transform duration-300">
+          <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72l5 2.73 5-2.73v3.72z"/>
+        </svg>
+      </a>
+    </div>
+  </footer>
+  <!-- 不蒜子统计脚本 -->
+  <script async src="https://events.vercount.one/js"></script>
+
+  <script>
+    // =====================================================================
+    // 1. 数据构建（严格匹配用户提供的最终 List）
+    // =====================================================================
+    function makeTravelPhotos(destId, label, count) {
+      return Array.from({ length: count }, (_, i) => ({
+        id: `${destId}-t-${i}`,
+        title: `${label} - Frame ${String(i+1).padStart(2, "0")}`,
+        src: `assets/travel/${destId}/travel-${i+1}.jpg`,
+        date: "2024-XX-XX",
+        camera: "Sony A7C II",
+        lens: "24-70mm f/2.8 GM",
+        aperture: "f/4.0",
+        iso: "ISO 100"
+      }));
+    }
+
+    function makePilgrimage(destId, work, count) {
+      return Array.from({ length: count }, (_, i) => ({
+        work: work,
+        title: `${work} — Scene ${i+1}`,
+        filmSrc: `assets/travel/${destId}/film-${i+1}.jpg`,
+        realSrc: `assets/travel/${destId}/real-${i+1}.jpg`
+      }));
+    }
+
+    const cityData = [
+      // 欧洲
+      { id: "at-vienna", country: "Austria", name: "Vienna", sub: "Vienna", coord: [16.37, 48.21], travel: 3, pilg: [{work:"Before Sunrise", count:9}] },
+      { id: "at-lake", country: "Austria", name: "Lake District", sub: "Salzkammergut", coord: [13.78, 47.77], travel: 3, pilg: [] },
+      { id: "cz-prague", country: "Czechia", name: "Prague", sub: "Prague", coord: [14.42, 50.08], travel: 3, pilg: [{work:"Mission: Impossible", count:9}, {work:"007 Casino Royale", count:3}, {work:"Jason Bourne", count:6}] },
+      { id: "cz-ck", country: "Czechia", name: "Cesky Krumlov", sub: "South Bohemia", coord: [14.32, 48.81], travel: 2, pilg: [] },
+      { id: "gb-london", country: "United Kingdom", name: "London", sub: "England", coord: [-0.12, 51.50], travel: 3, pilg: [{work:"Sherlock", count:3}] },
+{ 
+  id: "gb-cambridge", 
+  country: "United Kingdom", 
+  name: "Cambridge", 
+  sub: "England", 
+  coord: [0.12, 52.20], 
+  travel: 2, 
+  pilg: [] 
+},
+{ 
+  id: "hu-budapest", 
+  country: "Hungary", 
+  name: "Budapest", 
+  sub: "Central Hungary", 
+  coord: [19.04, 47.49], 
+  travel: 3, 
+  pilg: [
+    { work: "Black Widow", count: 3 },
+    { work: "The Day of the Jackal", count: 6 }
+  ] 
+},
+      
+      // 中东 & 亚洲
+      { id: "ae-abu", country: "United Arab Emirates", name: "Abu Dhabi", sub: "Abu Dhabi", coord: [54.37, 24.45], travel: 3, pilg: [] },
+      { id: "ae-dubai", country: "United Arab Emirates", name: "Dubai", sub: "Dubai", coord: [55.27, 25.20], travel: 3, pilg: [] },
+      { id: "tw-taipei", country: "Taiwan", name: "Taipei", sub: "Taipei", coord: [121.56, 25.03], travel: 2, pilg: [] },
+      { id: "tw-tainan", country: "Taiwan", name: "Tainan", sub: "Tainan", coord: [120.20, 22.99], travel: 2, pilg: [] },
+      { id: "tw-hualien", country: "Taiwan", name: "Hualien", sub: "Hualien", coord: [121.60, 23.97], travel: 2, pilg: [] },
+      { id: "sg-singapore", country: "Singapore", name: "Singapore", sub: "Singapore", coord: [103.81, 1.35], travel: 3, pilg: [] },
+      { id: "my-kl", country: "Malaysia", name: "Kuala Lumpur", sub: "Kuala Lumpur", coord: [101.68, 3.13], travel: 2, pilg: [] },
+      { id: "my-penang", country: "Malaysia", name: "Penang", sub: "Penang", coord: [100.33, 5.41], travel: 2, pilg: [] },
+      
+      // 北美
+      { id: "ca-toronto", country: "Canada", name: "Toronto", sub: "Ontario", coord: [-79.38, 43.65], travel: 3, pilg: [] },
+      { id: "ca-montreal", country: "Canada", name: "Montreal", sub: "Quebec", coord: [-73.56, 45.50], travel: 2, pilg: [] },
+      { id: "ca-quebec", country: "Canada", name: "Quebec City", sub: "Quebec", coord: [-71.20, 46.81], travel: 3, pilg: [] },
+      
+      // 日本
+      { id: "jp-tokyo", country: "Japan", name: "Tokyo", sub: "Tokyo", coord: [139.69, 35.68], travel: 3, pilg: [{work:"君の名は。", count:9}, {work:"Persona 5", count:9}, {work:"Lycoris Recoil", count:9}, {work:"孤独のグルメ", count:6}] },
+      { id: "jp-fujisawa", country: "Japan", name: "Fujisawa", sub: "Kanagawa", coord: [139.48, 35.33], travel: 0, pilg: [{work:"青春ブタ野郎シリーズ", count:9}] },
+      { id: "jp-hakone", country: "Japan", name: "Hakone", sub: "Kanagawa", coord: [139.10, 35.23], travel: 0, pilg: [{work:"新世紀エヴァンゲリオン", count:3}] },
+      { id: "jp-nagoya", country: "Japan", name: "Nagoya", sub: "Aichi", coord: [136.90, 35.18], travel: 3, pilg: [] },
+      { id: "jp-nara", country: "Japan", name: "Nara", sub: "Nara", coord: [135.83, 34.68], travel: 2, pilg: [] },
+      { id: "jp-kyoto", country: "Japan", name: "Kyoto", sub: "Kyoto", coord: [135.76, 35.01], travel: 3, pilg: [] },
+      { id: "jp-uji", country: "Japan", name: "Uji", sub: "Kyoto", coord: [135.80, 34.88], travel: 0, pilg: [{work:"響け！ユーフォニアム", count:3}] },
+      { id: "jp-osaka", country: "Japan", name: "Osaka", sub: "Osaka", coord: [135.50, 34.69], travel: 2, pilg: [] },
+      
+      // 美国
+      { id: "us-ny", country: "United States", name: "New York", sub: "New York", coord: [-74.00, 40.71], travel: 3, pilg: [{work:"CSI: Crime Scene Investigation", count:6}, {work:"White Collar", count:6}] },
+      { id: "us-boston", country: "United States", name: "Boston", sub: "Massachusetts", coord: [-71.05, 42.36], travel: 3, pilg: [{work:"Fallout 4", count:6}] },
+      { id: "us-dc", country: "United States", name: "Washington, D.C.", sub: "District of Columbia", coord: [-77.03, 38.90], travel: 3, pilg: [] },
+      { id: "us-chicago", country: "United States", name: "Chicago", sub: "Illinois", coord: [-87.62, 41.87], travel: 3, pilg: [] },
+      { id: "us-miami", country: "United States", name: "Miami", sub: "Florida", coord: [-80.19, 25.76], travel: 3, pilg: [] },
+      { id: "us-philadelphia", country: "United States", name: "Philadelphia", sub: "Pennsylvania", coord: [-75.16, 39.95], travel: 3, pilg: [] },
+      { id: "us-ames", country: "United States", name: "Ames, IA", sub: "Iowa", coord: [-93.62, 42.03], travel: 3, pilg: [] },
+
+      // 中国香港
+      { id: "hk-hongkong", country: "China", name: "Hong Kong", sub: "Hong Kong", coord: [114.16, 22.31], travel: 0, pilg: [{work:"無間道", count:3}] }
+    ];
+
+    const destinations = cityData.map(d => {
+      const dest = {
+        id: d.id,
+        country: d.country,
+        name: d.name,
+        regionDisplay: `${d.country} • ${d.sub}`,
+        travelPhotos: makeTravelPhotos(d.id, d.name, d.travel),
+        pilgrimages: []
+      };
+      d.pilg.forEach(p => {
+        dest.pilgrimages.push(...makePilgrimage(d.id, p.work, p.count));
+      });
+      return dest;
+    });
+
+    // 严格匹配 ECharts 地图内的名称（加入 China）
+    const echartsVisitedCountries = [
+      "Austria", "Czech Rep.", "United Kingdom", "Hungary",
+      "United Arab Emirates", "Taiwan", "Singapore", "Malaysia",
+      "Canada", "Japan", "United States", "China"
+    ];
+
+    // =====================================================================
+    // 2. 初始化 ECharts 地图
+    // =====================================================================
+    const chartDom = document.getElementById('world-map');
+    const myChart = echarts.init(chartDom, null, { renderer: 'canvas' });
+
+    Promise.all([
+      fetch('https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/json/world.json').then(res => res.json()),
+    ]).then(([worldJson]) => {
+      echarts.registerMap('world', worldJson);
+
+      // 构建 regions 数据
+      const regionsData = echartsVisitedCountries.map(c => ({
+        name: c,
+        itemStyle: {
+          areaColor: 'rgba(30, 58, 138, 0.6)', // 深蓝色
+          borderColor: '#3B82F6',
+          borderWidth: 1
+        }
+      }));
+
+      const option = {
+        backgroundColor: 'transparent',
+        geo: {
+          map: 'world',
+          roam: true,
+          zoom: 1.2,
+          center: [15, 25],
+          itemStyle: {
+            areaColor: '#111827', // 默认背景色（灰色）
+            borderColor: 'rgba(255,255,255,0.05)',
+            borderWidth: 0.5
+          },
+          emphasis: {
+            itemStyle: { areaColor: '#1f2937' },
+            label: { show: false }
+          },
+          select: {
+            itemStyle: {
+              areaColor: 'rgba(96, 165, 250, 0.8)', // 选中时的亮蓝色
+              borderColor: '#60A5FA',
+              borderWidth: 1
+            },
+            label: { show: false }
+          },
+          selectedMode: 'single',
+          regions: regionsData
+        },
+        series: [
+          {
+            type: 'scatter',
+            coordinateSystem: 'geo',
+            symbolSize: 6,
+            itemStyle: {
+              color: '#60A5FA',
+              shadowBlur: 10,
+              shadowColor: '#3B82F6'
+            },
+            data: cityData.map(d => ({
+              name: d.name,
+              value: d.coord,
+              destId: d.id
+            })),
+            emphasis: {
+              scale: 1.5,
+              label: { show: true, formatter: '{b}', color: '#fff', fontSize: 11, fontFamily: 'JetBrains Mono', distance: 4 }
+            }
+          }
+        ]
+      };
+
+      myChart.setOption(option);
+
+      myChart.on('click', function (params) {
+        if (params.seriesType === 'scatter' && params.data && params.data.destId) {
+          selectDestination(params.data.destId);
+          return;
+        }
+        const countryDest = destinations.find(d => d.country === params.name);
+        if (countryDest) {
+          selectDestination(countryDest.id);
+        }
+      });
+    });
+
+    window.addEventListener('resize', () => { myChart.resize(); });
+
+    // =====================================================================
+    // 3. 渲染下方的画廊
+    // =====================================================================
+    let activeDestinationId = null;
+
+    window.selectDestination = function(id) {
+      activeDestinationId = id;
+      renderShowcase();
+      document.getElementById("destination-showcase").scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    function renderShowcase() {
+      const container = document.getElementById("destination-showcase");
+      const dest = destinations.find(d => d.id === activeDestinationId);
+      if (!dest) { container.innerHTML = ""; return; }
+
+      let html = `
+        <div class="glass-panel rounded-3xl p-6 md:p-10">
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/10 pb-6 mb-8">
+            <div>
+              <div class="font-mono text-xs text-rose-400 uppercase tracking-widest mb-1">${dest.regionDisplay}</div>
+              <h2 class="text-3xl md:text-4xl font-bold text-white">${dest.name}</h2>
+            </div>
+          </div>
+      `;
+
+      if (dest.travelPhotos.length > 0) {
+        html += `
+          <div class="mb-12">
+            <h3 class="font-mono text-xs text-gray-400 uppercase tracking-widest mb-6">Travel Frames</h3>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              ${dest.travelPhotos.map(photo => `
+                <article onclick="openLightbox('${photo.src}', '${photo.title}', '${photo.date}', '${photo.camera}', '${photo.lens}', '${photo.aperture}', '${photo.iso}')" 
+                  class="photo-card group cursor-pointer rounded-2xl overflow-hidden bg-white/5 border border-white/10">
+                  <div class="aspect-[4/3] bg-slate-800 relative overflow-hidden">
+                    <img src="${photo.src}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWUyOTNiIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM2YjcyODAiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=='" />
+                  </div>
+                  <div class="p-4 flex justify-between items-center font-mono text-[11px] text-gray-400">
+                    <span>${photo.date}</span>
+                    <span>${photo.camera}</span>
+                  </div>
+                </article>
+              `).join("")}
+            </div>
+          </div>
+        `;
+      }
+
+      if (dest.pilgrimages.length > 0) {
+        html += `
+          <div>
+            <h3 class="font-mono text-xs text-rose-400 uppercase tracking-widest mb-6">Cinematic Pilgrimage</h3>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              ${dest.pilgrimages.map((item, idx) => `
+                <article class="rounded-2xl overflow-hidden bg-white/5 border border-white/10">
+                  <div class="compare-box aspect-video w-full bg-slate-900" style="--pos: 82%;">
+                    <img src="${item.filmSrc}" class="w-full h-full object-cover pointer-events-none" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjI1Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjcxYjFkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5Y2ExYTMiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkZpbG0gU2NlbmU8L3RleHQ+PC9zdmc+'" />
+                    <div class="compare-real-layer">
+                      <img src="${item.realSrc}" class="w-full h-full object-cover pointer-events-none" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjI1Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWUyOTNiIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5Y2ExYTMiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlJlYWwgUGhvdG88L3RleHQ+PC9zdmc+'" />
+                    </div>
+                    <div class="compare-divider"></div>
+                    <div class="compare-handle">↔</div>
+                  </div>
+                  <div class="p-4 font-mono text-[11px] text-gray-300">
+                    <div class="text-rose-300/80 mb-1">${item.work}</div>
+                    <div class="text-white">${item.title}</div>
+                  </div>
+                </article>
+              `).join("")}
+            </div>
+          </div>
+        `;
+      }
+
+      html += `</div>`;
+      container.innerHTML = html;
+      bindCompareSliders();
+    }
+
+    function bindCompareSliders() {
+      document.querySelectorAll(".compare-box").forEach(box => {
+        const updatePos = (clientX) => {
+          const rect = box.getBoundingClientRect();
+          let pct = ((clientX - rect.left) / rect.width) * 100;
+          box.style.setProperty("--pos", `${Math.max(0, Math.min(100, pct))}%`);
+        };
+        let dragging = false;
+        box.addEventListener("pointerdown", (e) => { dragging = true; box.setPointerCapture(e.pointerId); updatePos(e.clientX); });
+        box.addEventListener("pointermove", (e) => { if (dragging) updatePos(e.clientX); });
+        box.addEventListener("pointerup", () => { dragging = false; });
+      });
+    }
+
+    // =====================================================================
+    // 4. Lightbox 放大逻辑
+    // =====================================================================
+    window.openLightbox = function(src, title, date, camera, lens, aperture, iso) {
+      document.getElementById("lb-title").textContent = title;
+      document.getElementById("lb-date").textContent = date;
+      document.getElementById("lb-camera").textContent = camera;
+      document.getElementById("lb-lens").textContent = lens;
+      document.getElementById("lb-aperture").textContent = aperture;
+      document.getElementById("lb-iso").textContent = iso;
+      document.getElementById("lb-path").textContent = src;
+
+      document.getElementById("lb-media").innerHTML = `
+        <img src="${src}" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl pointer-events-auto" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWUyOTNiIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM2YjcyODAiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD48L3N2Zz4='" />
+      `;
+      document.getElementById("photo-lightbox").classList.remove("hidden");
+    };
+
+    window.closeLightbox = function(event, force = false) {
+      if (force || (event && event.target.id === 'photo-lightbox')) {
+        document.getElementById("photo-lightbox").classList.add("hidden");
+      }
+    };
+  </script>
+</body>
+</html>
