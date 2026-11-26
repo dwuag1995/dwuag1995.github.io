@@ -167,7 +167,7 @@
       <div class="flex items-center gap-3 font-mono text-xs text-yellow-400/90 uppercase tracking-widest mb-3">
         <span>04 // Mixology & Menu</span>
         <span class="text-gray-700">•</span>
-        <span id="total-badge" class="text-gray-400">100 Classic & Signature Serves</span>
+        <span id="total-badge" class="text-gray-400">101 Classic & Signature Serves</span>
       </div>
       <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white mb-4">
         David's Home Bar
@@ -233,7 +233,7 @@
 
       <!-- Active Status Bar -->
       <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono text-xs text-gray-400">
-        <span id="result-summary">Showing all 100 drinks on the menu.</span>
+        <span id="result-summary">Showing all 101 drinks on the menu.</span>
         <span id="active-tags-text" class="text-yellow-400/90 truncate max-w-md"></span>
       </div>
     </section>
@@ -306,7 +306,7 @@
   <script async src="https://events.vercount.one/js"></script>
 
   <!-- ===================================================================== -->
-  <!-- 100 CLASSIC COCKTAILS, MINIMAL HAND-DRAWN ART & MATCH-ALL ENGINE      -->
+  <!-- 101 CLASSIC COCKTAILS, MINIMAL HAND-DRAWN ART & MATCH-ALL ENGINE      -->
   <!-- ===================================================================== -->
   <script>
     const ingredientCategories = {
@@ -336,7 +336,7 @@
         "Pineapple Juice",
         "Ginger Beer",
         "Cranberry Juice",
-        "Cola",
+        "Coke",
         "Tonic Water",
         "Cream / Milk",
         "Espresso",
@@ -345,10 +345,7 @@
       ]
     };
 
-    // 100 Famous & IBA Cocktails
-    // glass: "martini" | "coupe" | "rocks" | "highball" | "tiki" | "irish"
-    // liquid: hex color for hand-drawn minimalist illustration
-    // garnish: "citrus" | "mint" | "cherry" | "olive" | "coffee" | "salt" | "pineapple" | "none"
+    // 101 Famous & IBA Cocktails
     const cocktails = [
       // 1-20: Gin Classics
       { name: "Gin & Tonic", category: "Highball", profile: "Crisp • Botanical • Effervescent", glass: "highball", liquid: "#67E8F9", garnish: "citrus", spirits: ["Gin"], liqueurs: [], mixers: ["Tonic Water", "Lemon / Lime Juice"], notes: "London Dry gin lengthened with chilled quinine tonic and a bright lime wedge.", specs: "50ml Gin • 120ml Tonic Water • Lime Wedge" },
@@ -394,10 +391,11 @@
       { name: "Kentucky Buck", category: "Modern Highball", profile: "Berry • Ginger • Bright", glass: "highball", liquid: "#F43F5E", garnish: "citrus", spirits: ["Whisky"], liqueurs: [], mixers: ["Lemon / Lime Juice", "Ginger Beer"], notes: "Bourbon, muddled berry, lemon, and bitters topped with ginger beer.", specs: "50ml Bourbon • 15ml Lemon • Muddled Berry • Top Ginger Beer" },
       { name: "Hot Toddy", category: "Warm Classic", profile: "Soothing • Honey • Lemon", glass: "irish", liquid: "#F59E0B", garnish: "citrus", spirits: ["Whisky"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Warming blend of whisky, honey, lemon juice, and hot water/tea.", specs: "50ml Whisky • 15ml Honey • 15ml Lemon • 100ml Hot Water" },
 
-      // 41-60: Rum Classics
+      // 41-61: Rum & Multi-Spirit Classics (Including Long Island Iced Tea)
+      { name: "Long Island Iced Tea", category: "Contemporary Classics", profile: "Citrus • Coke • High-Octane", glass: "highball", liquid: "#78350F", garnish: "citrus", spirits: ["Vodka", "Gin", "Rum", "Tequila"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Lemon / Lime Juice", "Coke"], notes: "Four white spirits shaken with Cointreau and fresh lemon juice, lengthened with chilled Coke.", specs: "15ml each Vodka, Gin, White Rum, Tequila, Cointreau • 25ml Lemon Juice • 15ml Syrup • Top Coke" },
       { name: "Daiquiri", category: "The Unforgettables", profile: "Tart • Crisp • Cuban", glass: "coupe", liquid: "#FEF08A", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "White rum, fresh lime juice, and sugar shaken until ice-cold.", specs: "60ml White Rum • 25ml Fresh Lime Juice • 15ml Syrup" },
       { name: "Mojito", category: "Contemporary Classics", profile: "Mint • Lime • Bubbly", glass: "highball", liquid: "#A7F3D0", garnish: "mint", spirits: ["Rum"], liqueurs: [], mixers: ["Lemon / Lime Juice", "Soda Water"], notes: "Rum, fresh mint, lime, sugar, and crushed ice topped with soda.", specs: "45ml White Rum • 20ml Lime • 6 Mint Sprigs • 15ml Syrup • Soda" },
-      { name: "Cuba Libre", category: "Contemporary Classics", profile: "Cola • Lime • Easy", glass: "highball", liquid: "#451A03", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Cola", "Lemon / Lime Juice"], notes: "Rum and chilled cola brightened with fresh lime juice.", specs: "50ml Rum • 120ml Cola • 10ml Fresh Lime Juice" },
+      { name: "Cuba Libre", category: "Contemporary Classics", profile: "Coke • Lime • Easy", glass: "highball", liquid: "#451A03", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Coke", "Lemon / Lime Juice"], notes: "Rum and chilled Coke brightened with fresh lime juice.", specs: "50ml Rum • 120ml Coke • 10ml Fresh Lime Juice" },
       { name: "Piña Colada", category: "Contemporary Classics", profile: "Coconut • Pineapple • Creamy", glass: "tiki", liquid: "#FEF9C3", garnish: "pineapple", spirits: ["Rum"], liqueurs: ["Malibu"], mixers: ["Pineapple Juice", "Cream / Milk"], notes: "Rum and coconut blended with pineapple juice and cream.", specs: "50ml White Rum • 30ml Coconut Cream • 90ml Pineapple Juice" },
       { name: "Dark 'n' Stormy", category: "New Era", profile: "Ginger • Molasses • Spicy", glass: "highball", liquid: "#78350F", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Ginger Beer", "Lemon / Lime Juice"], notes: "Dark rum layered over spicy ginger beer and fresh lime.", specs: "60ml Dark Rum • 100ml Ginger Beer • 15ml Lime Juice" },
       { name: "Mai Tai", category: "Contemporary Classics", profile: "Almond • Citrus • Tiki", glass: "tiki", liquid: "#F59E0B", garnish: "mint", spirits: ["Rum"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Lemon / Lime Juice"], notes: "Aged rum, orange curaçao, orgeat, and fresh lime.", specs: "45ml Aged Rum • 15ml Cointreau/Curaçao • 15ml Orgeat • 25ml Lime" },
@@ -411,12 +409,12 @@
       { name: "Painkiller", category: "Island Classic", profile: "Creamy • Nutmeg • Pineapple", glass: "tiki", liquid: "#FDE68A", garnish: "pineapple", spirits: ["Rum"], liqueurs: ["Malibu"], mixers: ["Pineapple Juice", "Orange Juice", "Cream / Milk"], notes: "Rum, pineapple, orange juice, and coconut cream topped with nutmeg.", specs: "60ml Rum • 90ml Pineapple • 30ml Orange • 30ml Coconut Cream" },
       { name: "Daiquiri Floridita", category: "Classic Sour", profile: "Icy • Lime • Smooth", glass: "coupe", liquid: "#DCFCE7", garnish: "citrus", spirits: ["Rum"], liqueurs: ["Maraschino"], mixers: ["Lemon / Lime Juice"], notes: "Shaken or blended white rum, lime, sugar, and a splash of maraschino.", specs: "60ml White Rum • 25ml Lime Juice • 15ml Syrup • 5ml Maraschino" },
       { name: "Banana Daiquiri", category: "Tropical Sour", profile: "Banana • Lime • Velvety", glass: "coupe", liquid: "#FEF08A", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Rum and fresh lime blended with ripe banana and sugar.", specs: "50ml Rum • 20ml Lime Juice • 15ml Syrup • 1/2 Ripe Banana" },
-      { name: "Rum & Cola", category: "Highball", profile: "Classic • Caramel • Crisp", glass: "highball", liquid: "#451A03", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Cola"], notes: "Straightforward highball of rum and chilled cola over ice.", specs: "50ml Rum • 120ml Cola • Lime Wedge" },
+      { name: "Rum & Coke", category: "Highball", profile: "Classic • Caramel • Crisp", glass: "highball", liquid: "#451A03", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Coke"], notes: "Straightforward highball of rum and chilled Coke over ice.", specs: "50ml Rum • 120ml Coke • Lime Wedge" },
       { name: "Rum Swizzle", category: "Caribbean Classic", profile: "Lime • Spiced • Frosty", glass: "highball", liquid: "#A3E635", garnish: "mint", spirits: ["Rum"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Rum, lime, syrup, and bitters swizzled over crushed ice.", specs: "60ml Rum • 25ml Lime Juice • 15ml Syrup • 3 Dashes Bitters" },
       { name: "Bacardi Cocktail", category: "The Unforgettables", profile: "Lime • Ruby • Crisp", glass: "coupe", liquid: "#FDA4AF", garnish: "none", spirits: ["Rum"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "White rum shaken with fresh lime and grenadine syrup.", specs: "45ml White Rum • 20ml Lime Juice • 10ml Grenadine" },
       { name: "Caipirinha", category: "Brazilian Classic", profile: "Cachaça/Rum • Lime • Cane", glass: "rocks", liquid: "#BEF264", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Muddled fresh lime wedges and sugar topped with spirit over ice.", specs: "50ml Cane Spirit/Rum • 1/2 Lime (4 Wedges) • 15ml Syrup" },
 
-      // 61-78: Tequila Classics
+      // 62-79: Tequila Classics
       { name: "Margarita", category: "Contemporary Classics", profile: "Lime • Cointreau • Salted", glass: "coupe", liquid: "#BEF264", garnish: "salt", spirits: ["Tequila"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Lemon / Lime Juice"], notes: "Tequila, Cointreau, and fresh lime juice served in a salt-rimmed glass.", specs: "50ml Tequila • 20ml Cointreau • 20ml Lime Juice • Salt Rim" },
       { name: "Paloma", category: "New Era", profile: "Grapefruit • Bubbly • Crisp", glass: "highball", liquid: "#FDA4AF", garnish: "salt", spirits: ["Tequila"], liqueurs: [], mixers: ["Soda Water", "Lemon / Lime Juice", "Grapefruit Juice"], notes: "Tequila, grapefruit juice, lime, and soda water with a pinch of salt.", specs: "50ml Tequila • 60ml Grapefruit • 15ml Lime • Soda Water" },
       { name: "Tequila Sunrise", category: "Contemporary Classics", profile: "Orange • Sweet • Layered", glass: "highball", liquid: "#FB923C", garnish: "citrus", spirits: ["Tequila"], liqueurs: [], mixers: ["Orange Juice"], notes: "Tequila and orange juice with a sinking ribbon of grenadine.", specs: "45ml Tequila • 90ml Orange Juice • 15ml Grenadine" },
@@ -427,7 +425,7 @@
       { name: "El Diablo", category: "Highball", profile: "Ginger • Berry • Crisp", glass: "highball", liquid: "#E11D48", garnish: "citrus", spirits: ["Tequila"], liqueurs: [], mixers: ["Ginger Beer", "Lemon / Lime Juice"], notes: "Tequila, crème de cassis, lime, and ginger beer.", specs: "45ml Tequila • 15ml Cassis • 15ml Lime • Ginger Beer" },
       { name: "Siesta", category: "Modern Classic", profile: "Campari • Grapefruit • Bitter-Sweet", glass: "coupe", liquid: "#FB7185", garnish: "citrus", spirits: ["Tequila"], liqueurs: ["Campari"], mixers: ["Lemon / Lime Juice", "Grapefruit Juice"], notes: "Tequila, Campari, fresh lime, grapefruit juice, and syrup.", specs: "45ml Tequila • 15ml Campari • 15ml Lime • 15ml Grapefruit • 10ml Syrup" },
       { name: "Naked and Famous", category: "New Era", profile: "Smoky-Citrus • Aperol • Herbal", glass: "coupe", liquid: "#F97316", garnish: "none", spirits: ["Tequila"], liqueurs: ["Aperol", "Green Chartreuse"], mixers: ["Lemon / Lime Juice"], notes: "Equal-parts modern classic pairing agave spirit, Aperol, Chartreuse, and lime.", specs: "22.5ml each Agave Spirit, Aperol, Green Chartreuse, Lime" },
-      { name: "Batanga", category: "Mexican Highball", profile: "Cola • Lime • Salted Rim", glass: "highball", liquid: "#451A03", garnish: "salt", spirits: ["Tequila"], liqueurs: [], mixers: ["Cola", "Lemon / Lime Juice"], notes: "Tequila, fresh lime, and cola in a salt-rimmed glass.", specs: "50ml Tequila • 15ml Lime • 120ml Cola • Salt Rim" },
+      { name: "Batanga", category: "Mexican Highball", profile: "Coke • Lime • Salted Rim", glass: "highball", liquid: "#451A03", garnish: "salt", spirits: ["Tequila"], liqueurs: [], mixers: ["Coke", "Lemon / Lime Juice"], notes: "Tequila, fresh lime, and Coke in a salt-rimmed glass.", specs: "50ml Tequila • 15ml Lime • 120ml Coke • Salt Rim" },
       { name: "Lone Tree Cooler", category: "Highball", profile: "Citrus • Herbal • Bubbly", glass: "highball", liquid: "#BEF264", garnish: "citrus", spirits: ["Tequila"], liqueurs: ["Midori"], mixers: ["Soda Water", "Lemon / Lime Juice"], notes: "Tequila, melon liqueur, lime, and soda water.", specs: "45ml Tequila • 15ml Midori • 15ml Lime • Soda Water" },
       { name: "Tequila & Tonic", category: "Highball", profile: "Botanical • Citrus • Crisp", glass: "highball", liquid: "#BAE6FD", garnish: "citrus", spirits: ["Tequila"], liqueurs: [], mixers: ["Tonic Water", "Lemon / Lime Juice"], notes: "Tequila topped with tonic water and a squeeze of lime.", specs: "50ml Tequila • 120ml Tonic Water • Lime Wedge" },
       { name: "Cadillac Margarita", category: "Classic Sour", profile: "Rich Orange • Lime • Silky", glass: "rocks", liquid: "#FDE047", garnish: "salt", spirits: ["Tequila"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Lemon / Lime Juice"], notes: "Tequila, lime, and Cointreau with a rich liqueur float.", specs: "50ml Tequila • 20ml Cointreau • 20ml Lime • 10ml Grand Marnier Float" },
@@ -436,7 +434,7 @@
       { name: "Panch Villa", category: "Highball", profile: "Orange • Crisp • Bubbly", glass: "highball", liquid: "#FB923C", garnish: "citrus", spirits: ["Tequila"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Orange Juice", "Soda Water"], notes: "Tequila, orange liqueur, and orange juice with a splash of soda.", specs: "45ml Tequila • 15ml Cointreau • 75ml Orange Juice • Soda" },
       { name: "Cantina Fizz", category: "Highball", profile: "Lime • Ginger • Bright", glass: "highball", liquid: "#A3E635", garnish: "mint", spirits: ["Tequila"], liqueurs: [], mixers: ["Lemon / Lime Juice", "Ginger Beer", "Soda Water"], notes: "Bright tequila cooler with lime, mint, and ginger fizz.", specs: "45ml Tequila • 20ml Lime • 15ml Syrup • Ginger Beer & Soda" },
 
-      // 79-91: Vodka Classics
+      // 80-92: Vodka Classics
       { name: "Espresso Martini", category: "New Era", profile: "Espresso • Coffee • Silky", glass: "martini", liquid: "#451A03", garnish: "coffee", spirits: ["Vodka"], liqueurs: ["Coffee Liqueur"], mixers: ["Espresso"], notes: "Fresh espresso shaken with vodka and coffee liqueur.", specs: "50ml Vodka • 30ml Coffee Liqueur • 30ml Espresso • 5ml Syrup" },
       { name: "Moscow Mule", category: "Contemporary Classics", profile: "Ginger • Lime • Crisp", glass: "highball", liquid: "#FDE047", garnish: "citrus", spirits: ["Vodka"], liqueurs: [], mixers: ["Ginger Beer", "Lemon / Lime Juice"], notes: "Vodka, fresh lime juice, and spicy ginger beer over ice.", specs: "45ml Vodka • 15ml Lime Juice • 120ml Ginger Beer" },
       { name: "Cosmopolitan", category: "Contemporary Classics", profile: "Cranberry • Citrus • Tart", glass: "martini", liquid: "#F472B6", garnish: "citrus", spirits: ["Vodka"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Cranberry Juice", "Lemon / Lime Juice"], notes: "Vodka, Cointreau, lime, and cranberry juice shaken until crisp.", specs: "40ml Vodka • 15ml Cointreau • 15ml Lime • 30ml Cranberry Juice" },
@@ -451,14 +449,14 @@
       { name: "Cape Codder", category: "Classic Highball", profile: "Cranberry • Lime • Refreshing", glass: "highball", liquid: "#F43F5E", garnish: "citrus", spirits: ["Vodka"], liqueurs: [], mixers: ["Cranberry Juice", "Lemon / Lime Juice"], notes: "Vodka and cranberry juice with a fresh lime squeeze.", specs: "50ml Vodka • 100ml Cranberry Juice • Lime Wedge" },
       { name: "Lemon Drop Martini", category: "Modern Classic", profile: "Lemon • Sugared • Crisp", glass: "martini", liquid: "#FEF08A", garnish: "citrus", spirits: ["Vodka"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Lemon / Lime Juice"], notes: "Vodka, Cointreau, and fresh lemon juice shaken until icy.", specs: "45ml Vodka • 15ml Cointreau • 20ml Lemon Juice • 10ml Syrup" },
 
-      // 92-96: Brandy Classics
+      // 93-97: Brandy Classics
       { name: "Sidecar", category: "The Unforgettables", profile: "Cognac • Citrus • Classic", glass: "coupe", liquid: "#FBBF24", garnish: "citrus", spirits: ["Brandy"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Lemon / Lime Juice"], notes: "Brandy/Cognac, Cointreau, and fresh lemon juice.", specs: "50ml Cognac • 20ml Cointreau • 20ml Lemon Juice" },
       { name: "Brandy Alexander", category: "The Unforgettables", profile: "Cocoa • Cream • Dessert", glass: "coupe", liquid: "#E7E5E4", garnish: "none", spirits: ["Brandy"], liqueurs: ["Crème de Cacao"], mixers: ["Cream / Milk"], notes: "Brandy, crème de cacao, and cream dusted with nutmeg.", specs: "30ml Cognac • 30ml Crème de Cacao • 30ml Cream • Nutmeg" },
       { name: "Between the Sheets", category: "The Unforgettables", profile: "Brandy • Rum • Citrus", glass: "coupe", liquid: "#F59E0B", garnish: "citrus", spirits: ["Brandy", "Rum"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Lemon / Lime Juice"], notes: "Cognac and white rum shaken with Cointreau and lemon.", specs: "30ml Cognac • 30ml White Rum • 30ml Cointreau • 20ml Lemon" },
       { name: "French Connection", category: "Contemporary Classics", profile: "Cognac • Almond • Warm", glass: "rocks", liquid: "#B45309", garnish: "none", spirits: ["Brandy"], liqueurs: ["Amaretto"], mixers: [], notes: "Cognac and amaretto stirred over ice.", specs: "35ml Cognac • 35ml Amaretto" },
       { name: "Stinger", category: "Digestif Classic", profile: "Mint • Brandy • Crisp", glass: "coupe", liquid: "#A7F3D0", garnish: "mint", spirits: ["Brandy"], liqueurs: [], mixers: [], notes: "Brandy and white crème de menthe shaken and strained.", specs: "50ml Brandy • 20ml White Crème de Menthe" },
 
-      // 97-100: Liqueur & Aperitivo Classics
+      // 98-101: Liqueur & Aperitivo Classics
       { name: "Aperol Spritz", category: "New Era", profile: "Aperol • Bubbly • Bitter-Sweet", glass: "highball", liquid: "#F97316", garnish: "citrus", spirits: [], liqueurs: ["Aperol"], mixers: ["Soda Water"], notes: "Aperol with sparkling wine/soda and an orange slice.", specs: "60ml Aperol • 90ml Prosecco • 30ml Soda Water • Orange Slice" },
       { name: "Americano", category: "The Unforgettables", profile: "Campari • Vermouth • Crisp", glass: "highball", liquid: "#DC2626", garnish: "citrus", spirits: [], liqueurs: ["Campari", "Sweet Vermouth"], mixers: ["Soda Water"], notes: "Campari and sweet vermouth topped with soda water.", specs: "30ml Campari • 30ml Sweet Vermouth • Splash Soda Water" },
       { name: "B-52", category: "Layered Shooter", profile: "Coffee • Baileys • Orange", glass: "rocks", liquid: "#92400E", garnish: "none", spirits: [], liqueurs: ["Coffee Liqueur", "Baileys", "Cointreau / Triple Sec"], mixers: [], notes: "Layered coffee liqueur, Baileys, and orange liqueur.", specs: "20ml Coffee Liqueur • 20ml Baileys • 20ml Cointreau/Grand Marnier" },
@@ -589,23 +587,23 @@
       }).join("");
     }
 
-function renderMixersGroup() {
-  const container = document.getElementById("group-mixers");
-  container.innerHTML = sortedMixers.map(({ name }) => {
-    const isActive = selectedIngredients.has(name);
-    return `
-      <button 
-        onclick="toggleIngredient('${name.replace(/'/g, "\\'")}')"
-        class="px-3 py-1.5 rounded-full font-mono text-xs transition-all duration-200 border ${
-          isActive
-            ? "bg-sky-400 text-black border-sky-300 font-semibold shadow-lg shadow-sky-400/20"
-            : "bg-white/[0.03] text-gray-300 border-white/10 hover:border-white/30 hover:text-white"
-        }">
-        ${isActive ? "✓ " : ""}${name}
-      </button>
-    `;
-  }).join("");
-}
+    function renderMixersGroup() {
+      const container = document.getElementById("group-mixers");
+      container.innerHTML = sortedMixers.map(({ name }) => {
+        const isActive = selectedIngredients.has(name);
+        return `
+          <button 
+            onclick="toggleIngredient('${name.replace(/'/g, "\\'")}')"
+            class="px-3 py-1.5 rounded-full font-mono text-xs transition-all duration-200 border ${
+              isActive
+                ? "bg-sky-400 text-black border-sky-300 font-semibold shadow-lg shadow-sky-400/20"
+                : "bg-white/[0.03] text-gray-300 border-white/10 hover:border-white/30 hover:text-white"
+            }">
+            ${isActive ? "✓ " : ""}${name}
+          </button>
+        `;
+      }).join("");
+    }
 
     function renderAllFilters() {
       renderSimpleGroup(
