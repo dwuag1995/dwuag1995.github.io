@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home Bar | David (Daihui) Wu</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#F3F4F6',
+            muted: '#9CA3AF',
+            accent: '#3B82F6',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::selection { background: #EAB308; color: #050505; }
+
+    .bg-deep-space {
+      background-color: #050505;
+      background-image: radial-gradient(ellipse at 50% 0%, #111827 0%, #050505 70%);
+    }
+
+    .star-layer {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .stars-bg {
+      background-image: 
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 80% 30%, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.8), transparent);
+      background-size: 250px 250px;
+      background-repeat: repeat;
+    }
+
+    .stars-mid {
+      background-image: 
+        radial-gradient(1.5px 1.5px at 15% 85%, rgba(255,255,255,1), transparent),
+        radial-gradient(1.5px 1.5px at 85% 15%, rgba(255,255,255,0.9), transparent),
+        radial-gradient(1.5px 1.5px at 45% 35%, rgba(255,255,255,1), transparent);
+      background-size: 400px 400px;
+      background-repeat: repeat;
+      animation: twinkle-mid 6s infinite alternate ease-in-out;
+    }
+
+    .stars-front {
+      background-image: 
+        radial-gradient(2px 2px at 20% 40%, rgba(255,255,255,1), transparent),
+        radial-gradient(2px 2px at 75% 65%, rgba(255,255,255,1), transparent),
+        radial-gradient(2px 2px at 60% 10%, rgba(255,255,255,1), transparent);
+      background-size: 600px 600px;
+      background-repeat: repeat;
+      animation: twinkle-front 4s infinite alternate ease-in-out;
+    }
+
+    @keyframes twinkle-mid {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.8; }
+    }
+
+    @keyframes twinkle-front {
+      0% { opacity: 0.1; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1.05); }
+    }
+
+    .glass-panel {
+      background-color: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .drink-card {
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(8px);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .drink-card:hover {
+      border-color: rgba(250, 204, 21, 0.35);
+      background-color: rgba(255, 255, 255, 0.04);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="bg-deep-space text-ink antialiased min-h-screen flex flex-col relative font-sans overflow-x-hidden">
+
+  <!-- 三层真实星空背景 -->
+  <div class="star-layer stars-bg"></div>
+  <div class="star-layer stars-mid"></div>
+  <div class="star-layer stars-front"></div>
+
+  <!-- 顶部悬浮导航 (与主页完全一致) -->
+  <header class="fixed top-6 left-0 right-0 z-50 flex justify-center pointer-events-none">
+    <nav class="pointer-events-auto flex items-center gap-1 p-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl transition-all duration-300 hover:bg-white/10">
+      
+      <a href="index.html" class="flex items-center justify-center h-10 px-5 rounded-full hover:bg-white/10 transition-colors">
+        <span class="font-bold text-sm text-white tracking-wide">David Wu</span>
+      </a>
+
+      <div class="w-px h-5 bg-white/10 mx-1"></div>
+
+      <!-- Career -->
+      <a href="career.html" class="group flex items-center h-10 px-3.5 rounded-full hover:bg-white/10 transition-colors">
+        <svg class="w-4 h-4 text-gray-400 group-hover:text-blue-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+        <span class="max-w-0 overflow-hidden whitespace-nowrap opacity-0 group-hover:max-w-[100px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-300 ease-out font-sans text-xs font-medium text-white">Career</span>
+      </a>
+
+      <!-- Archive -->
+      <a href="archive.html" class="group flex items-center h-10 px-3.5 rounded-full hover:bg-white/10 transition-colors">
+        <svg class="w-4 h-4 text-gray-400 group-hover:text-emerald-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        <span class="max-w-0 overflow-hidden whitespace-nowrap opacity-0 group-hover:max-w-[100px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-300 ease-out font-sans text-xs font-medium text-white">Archive</span>
+      </a>
+
+      <!-- Travel -->
+      <a href="travel.html" class="group flex items-center h-10 px-3.5 rounded-full hover:bg-white/10 transition-colors">
+        <svg class="w-4 h-4 text-gray-400 group-hover:text-rose-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span class="max-w-0 overflow-hidden whitespace-nowrap opacity-0 group-hover:max-w-[100px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-300 ease-out font-sans text-xs font-medium text-white">Travel</span>
+      </a>
+
+      <!-- Home Bar (当前页高亮) -->
+      <a href="homebar.html" class="group flex items-center h-10 px-3.5 rounded-full bg-white/10 transition-colors" aria-current="page">
+        <svg class="w-4 h-4 text-yellow-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 14.5v6.5M8.5 21h7M19 4L12 14.5 5 4h14zM16.5 6.5h-9" />
+          <path d="M18.5 2.5l-1.5 1.5" stroke-linecap="round"/>
+          <circle cx="17.5" cy="3.5" r="1" fill="currentColor"/>
+        </svg>
+        <span class="ml-2 whitespace-nowrap font-sans text-xs font-medium text-white">Bar</span>
+      </a>
+
+    </nav>
+  </header>
+
+  <!-- 主体内容 -->
+  <main class="relative z-10 flex-grow w-full max-w-5xl mx-auto px-6 pt-36 pb-24">
+    
+    <!-- Header -->
+    <section class="mb-12 max-w-3xl">
+      <div class="flex items-center gap-3 font-mono text-xs text-yellow-400/90 uppercase tracking-widest mb-3">
+        <span>04 // Mixology & Menu</span>
+        <span class="text-gray-700">•</span>
+        <span id="total-badge" class="text-gray-400">100 Classic & Signature Serves</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white mb-4">
+        David's Home Bar
+      </h1>
+      <p class="text-base md:text-lg text-gray-300 leading-relaxed font-light">
+        Stopping by for a drink? Select any combination of spirits, liqueurs, or mixers below (Match All) to see what can be crafted tonight.
+      </p>
+    </section>
+
+    <!-- Interactive 3-Tier Filter Console (Match All Only) -->
+    <section class="glass-panel rounded-2xl p-6 md:p-8 mb-10 space-y-6">
+      
+      <!-- Top Controls: Search, Match All Badge & Reset -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-white/10">
+        <!-- Search Input -->
+        <div class="relative flex-1 max-w-sm">
+          <input 
+            id="cocktail-search" 
+            type="text" 
+            placeholder="Search cocktail name, flavor, or note..." 
+            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-xs md:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-yellow-400/60 transition"
+          />
+        </div>
+
+        <!-- Match All Indicator & Reset -->
+        <div class="flex flex-wrap items-center gap-3 font-mono text-xs">
+
+          <button id="reset-filters" class="px-3 py-1.5 rounded-lg border border-white/10 text-gray-400 hover:text-yellow-400 hover:border-yellow-400/40 transition">
+            Reset All
+          </button>
+        </div>
+      </div>
+
+      <!-- Category 1: Six Base Spirits -->
+      <div>
+        <div class="flex items-center justify-between mb-2.5">
+          <span class="font-mono text-[11px] uppercase tracking-widest text-yellow-400/90">
+            I. Base Spirits
+          </span>
+        </div>
+        <div id="group-spirits" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- Category 2: Liqueurs & Fortified -->
+      <div>
+        <div class="flex items-center justify-between mb-2.5">
+          <span class="font-mono text-[11px] uppercase tracking-widest text-amber-300/80">
+            II. Liqueurs & Vermouth
+          </span>
+        </div>
+        <div id="group-liqueurs" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- Category 3: Mixers, Juices & Sodas (Sorted by Cocktail Count Desc) -->
+      <div>
+        <div class="flex items-center justify-between mb-2.5">
+          <span class="font-mono text-[11px] uppercase tracking-widest text-sky-300/80">
+            III. Juices, Sodas & Mixers
+          </span>
+        </div>
+        <div id="group-mixers" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- Active Status Bar -->
+      <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono text-xs text-gray-400">
+        <span id="result-summary">Showing all 100 drinks on the menu.</span>
+        <span id="active-tags-text" class="text-yellow-400/90 truncate max-w-md"></span>
+      </div>
+    </section>
+
+    <!-- Cocktail Cards Grid -->
+    <section id="cocktail-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- Rendered dynamically by JS -->
+    </section>
+
+  </main>
+
+  <!-- Footer (与主页完全一致) -->
+  <footer class="relative z-10 w-full max-w-3xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6 border-t border-white/5">
+    
+    <!-- 左侧：版权与访客统计 -->
+    <div class="flex flex-col md:flex-row items-center gap-2 md:gap-4 font-mono text-[11px] text-gray-500">
+      <span>© 2026 DAVID WU</span>
+      <span class="hidden md:inline text-gray-700">|</span>
+      <span id="busuanzi_container_site_pv" class="inline-flex items-center gap-1" style="display:inline-flex;">
+        Site Visits: <span id="busuanzi_value_site_pv" class="text-gray-300 font-medium">0</span>
+      </span>
+    </div>
+
+    <!-- 社交图标区 -->
+    <div class="flex justify-center gap-6 items-center">
+      
+      <!-- Instagram -->
+      <a href="https://www.instagram.com/dwuag/" target="_blank" class="group text-gray-400 hover:text-[#E1306C] transition-colors duration-300" aria-label="Instagram">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="transform group-hover:scale-110 transition-transform duration-300">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+        </svg>
+      </a>
+
+      <!-- 知乎 -->
+      <a href="https://www.zhihu.com/people/OperationGenoa" target="_blank" class="group relative inline-flex items-center justify-center w-[22px] h-[22px] transition-colors duration-300" aria-label="Zhihu">
+        <img
+          src="https://cdn.simpleicons.org/zhihu/9CA3AF"
+          alt="Zhihu"
+          class="w-[22px] h-[22px] object-contain opacity-100 group-hover:opacity-0 group-hover:scale-110 transition-all duration-300"
+          onerror="this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='inline-block';"
+        />
+        <img
+          src="https://cdn.simpleicons.org/zhihu/0084FF"
+          alt="Zhihu Hover"
+          class="w-[22px] h-[22px] object-contain absolute inset-0 opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 pointer-events-none"
+          onerror="this.style.display='none';"
+        />
+        <span class="hidden font-mono text-xs font-bold text-gray-400 group-hover:text-[#0084FF]">知</span>
+      </a>
+
+      <!-- LinkedIn -->
+      <a href="https://www.linkedin.com/in/dwuag/" target="_blank" class="group text-gray-400 hover:text-[#0A66C2] transition-colors duration-300" aria-label="LinkedIn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="transform group-hover:scale-110 transition-transform duration-300">
+          <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+        </svg>
+      </a>
+
+      <!-- Google Scholar -->
+      <a href="https://scholar.google.com.hk/citations?user=38uGpF8AAAAJ" target="_blank" class="group text-gray-400 hover:text-[#4285F4] transition-colors duration-300" aria-label="Google Scholar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="transform group-hover:scale-110 transition-transform duration-300">
+          <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72l5 2.73 5-2.73v3.72z"/>
+        </svg>
+      </a>
+    </div>
+  </footer>
+
+  <!-- 不蒜子统计脚本 -->
+  <script async src="https://events.vercount.one/js"></script>
+
+  <!-- ===================================================================== -->
+  <!-- 100 CLASSIC COCKTAILS, MINIMAL HAND-DRAWN ART & MATCH-ALL ENGINE      -->
+  <!-- ===================================================================== -->
+  <script>
+    const ingredientCategories = {
+      spirits: ["Gin", "Vodka", "Rum", "Tequila", "Whisky", "Brandy"],
+      liqueurs: [
+        "Cointreau / Triple Sec",
+        "Campari",
+        "Aperol",
+        "Sweet Vermouth",
+        "Dry Vermouth",
+        "Coffee Liqueur",
+        "Baileys",
+        "Amaretto",
+        "Midori",
+        "Malibu",
+        "Blue Curaçao",
+        "Peach Schnapps",
+        "Maraschino",
+        "Crème de Cacao",
+        "Green Chartreuse",
+        "St-Germain"
+      ],
+      mixers: [
+        "Lemon / Lime Juice",
+        "Soda Water",
+        "Orange Juice",
+        "Pineapple Juice",
+        "Ginger Beer",
+        "Cranberry Juice",
+        "Cola",
+        "Tonic Water",
+        "Cream / Milk",
+        "Espresso",
+        "Grapefruit Juice",
+        "Tomato Juice"
+      ]
+    };
+
+    // 100 Famous & IBA Cocktails
+    // glass: "martini" | "coupe" | "rocks" | "highball" | "tiki" | "irish"
+    // liquid: hex color for hand-drawn minimalist illustration
+    // garnish: "citrus" | "mint" | "cherry" | "olive" | "coffee" | "salt" | "pineapple" | "none"
+    const cocktails = [
+      // 1-20: Gin Classics
+      { name: "Gin & Tonic", category: "Highball", profile: "Crisp • Botanical • Effervescent", glass: "highball", liquid: "#67E8F9", garnish: "citrus", spirits: ["Gin"], liqueurs: [], mixers: ["Tonic Water", "Lemon / Lime Juice"], notes: "London Dry gin lengthened with chilled quinine tonic and a bright lime wedge.", specs: "50ml Gin • 120ml Tonic Water • Lime Wedge" },
+      { name: "Negroni", category: "The Unforgettables", profile: "Bitter • Herbal • Spirit-Forward", glass: "rocks", liquid: "#DC2626", garnish: "citrus", spirits: ["Gin"], liqueurs: ["Campari", "Sweet Vermouth"], mixers: [], notes: "Equal-parts Italian aperitivo uniting gin, bittersweet Campari, and sweet vermouth.", specs: "30ml Gin • 30ml Campari • 30ml Sweet Vermouth • Orange Peel" },
+      { name: "Dry Martini", category: "The Unforgettables", profile: "Dry • Crisp • Aromatic", glass: "martini", liquid: "#E0F2FE", garnish: "olive", spirits: ["Gin"], liqueurs: ["Dry Vermouth"], mixers: [], notes: "Stirred ice-cold for razor-sharp botanical clarity with dry vermouth.", specs: "60ml Gin • 10ml Dry Vermouth • Lemon Twist / Olive" },
+      { name: "Gin Fizz", category: "The Unforgettables", profile: "Bright • Citrusy • Bubbly", glass: "highball", liquid: "#FEF08A", garnish: "citrus", spirits: ["Gin"], liqueurs: [], mixers: ["Lemon / Lime Juice", "Soda Water"], notes: "Shaken gin, fresh lemon juice, and syrup topped with lively soda water.", specs: "45ml Gin • 30ml Lemon Juice • 10ml Syrup • 80ml Soda Water" },
+      { name: "Tom Collins", category: "Classic Highball", profile: "Zesty • Light • Refreshing", glass: "highball", liquid: "#FDE047", garnish: "cherry", spirits: ["Gin"], liqueurs: [], mixers: ["Lemon / Lime Juice", "Soda Water"], notes: "Tall citrus cooler with gin, lemon, syrup, and sparkling soda.", specs: "50ml Gin • 25ml Lemon Juice • 15ml Syrup • Soda Water" },
+      { name: "Gimlet", category: "Classic Sour", profile: "Sharp • Lime • Clean", glass: "coupe", liquid: "#A3E635", garnish: "citrus", spirits: ["Gin"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Clean, punchy pairing of aromatic gin and fresh lime juice.", specs: "60ml Gin • 25ml Fresh Lime Juice • 15ml Syrup" },
+      { name: "White Lady", category: "The Unforgettables", profile: "Silky • Citrus • Elegant", glass: "coupe", liquid: "#FEF9C3", garnish: "citrus", spirits: ["Gin"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Lemon / Lime Juice"], notes: "Velvety gin and Cointreau sour balanced with fresh lemon.", specs: "40ml Gin • 30ml Cointreau • 20ml Lemon Juice" },
+      { name: "Aviation", category: "The Unforgettables", profile: "Floral • Tart • Delicate", glass: "coupe", liquid: "#C4B5FD", garnish: "cherry", spirits: ["Gin"], liqueurs: ["Maraschino"], mixers: ["Lemon / Lime Juice"], notes: "Pre-Prohibition gem with gin, maraschino liqueur, lemon, and violet note.", specs: "45ml Gin • 15ml Maraschino • 15ml Lemon Juice • Violette" },
+      { name: "Last Word", category: "The Unforgettables", profile: "Herbal • Complex • Bold", glass: "coupe", liquid: "#86EFAC", garnish: "cherry", spirits: ["Gin"], liqueurs: ["Maraschino", "Green Chartreuse"], mixers: ["Lemon / Lime Juice"], notes: "Equal-parts classic blending gin, Green Chartreuse, maraschino, and lime.", specs: "22.5ml each Gin, Green Chartreuse, Maraschino, Lime" },
+      { name: "Corpse Reviver No. 2", category: "Contemporary Classics", profile: "Crisp • Citrus • Lively", glass: "coupe", liquid: "#FDE68A", garnish: "citrus", spirits: ["Gin"], liqueurs: ["Cointreau / Triple Sec", "Dry Vermouth"], mixers: ["Lemon / Lime Juice"], notes: "Equal parts gin, Cointreau, dry vermouth, and lemon with an absinthe rinse.", specs: "22.5ml each Gin, Cointreau, Dry Vermouth, Lemon" },
+      { name: "Singapore Sling", category: "Contemporary Classics", profile: "Tropical • Fruity • Spiced", glass: "tiki", liquid: "#FB7185", garnish: "pineapple", spirits: ["Gin"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Pineapple Juice", "Lemon / Lime Juice", "Soda Water"], notes: "Raffles icon combining gin, cherry liqueur, Cointreau, pineapple, and lime.", specs: "30ml Gin • 15ml Cherry Liqueur • 7.5ml Cointreau • 120ml Pineapple • 15ml Lime" },
+      { name: "Clover Club", category: "The Unforgettables", profile: "Berry • Silky • Tart", glass: "coupe", liquid: "#F472B6", garnish: "none", spirits: ["Gin"], liqueurs: ["Dry Vermouth"], mixers: ["Lemon / Lime Juice"], notes: "Ruby-pink classic with gin, dry vermouth, lemon, and raspberry syrup.", specs: "45ml Gin • 15ml Dry Vermouth • 15ml Lemon • 15ml Raspberry Syrup" },
+      { name: "Bramble", category: "Contemporary Classics", profile: "Blackberry • Tart • Frosty", glass: "rocks", liquid: "#A855F7", garnish: "citrus", spirits: ["Gin"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Gin, lemon, and syrup over crushed ice drizzled with dark blackberry liqueur.", specs: "45ml Gin • 20ml Lemon Juice • 10ml Syrup • 15ml Crème de Mûre" },
+      { name: "French 75", category: "The Unforgettables", profile: "Effervescent • Citrus • Festive", glass: "highball", liquid: "#FDE047", garnish: "citrus", spirits: ["Gin"], liqueurs: [], mixers: ["Lemon / Lime Juice", "Soda Water"], notes: "Gin, lemon, and syrup lengthened with sparkling wine or soda.", specs: "30ml Gin • 15ml Lemon Juice • 10ml Syrup • Top Sparkling/Soda" },
+      { name: "Vesper Martini", category: "New Era", profile: "Crisp • Strong • Botanical", glass: "martini", liquid: "#E2E8F0", garnish: "citrus", spirits: ["Gin", "Vodka"], liqueurs: ["Dry Vermouth"], mixers: [], notes: "Gin and vodka stirred with dry vermouth/Lillet and a lemon twist.", specs: "45ml Gin • 15ml Vodka • 10ml Dry Vermouth/Lillet • Lemon Twist" },
+      { name: "Tuxedo", category: "The Unforgettables", profile: "Dry • Herbal • Spirituous", glass: "martini", liquid: "#FCD34D", garnish: "cherry", spirits: ["Gin"], liqueurs: ["Dry Vermouth", "Maraschino"], mixers: [], notes: "Formal classic uniting gin, dry vermouth, maraschino, and absinthe/bitters.", specs: "30ml Gin • 30ml Dry Vermouth • 7.5ml Maraschino • Dash Bitters" },
+      { name: "John Collins", category: "Classic Highball", profile: "Bright • Lemon • Bubbly", glass: "highball", liquid: "#FEF08A", garnish: "citrus", spirits: ["Gin"], liqueurs: [], mixers: ["Lemon / Lime Juice", "Soda Water"], notes: "Classic highball with gin, tart lemon, sugar, and soda water.", specs: "50ml Gin • 25ml Lemon Juice • 15ml Syrup • Soda Water" },
+      { name: "Hanky Panky", category: "The Unforgettables", profile: "Herbal • Rich • Aromatic", glass: "coupe", liquid: "#D97706", garnish: "citrus", spirits: ["Gin"], liqueurs: ["Sweet Vermouth"], mixers: [], notes: "Savoy bartender Ada Coleman's gin and sweet vermouth classic with Fernet spark.", specs: "45ml Gin • 45ml Sweet Vermouth • 5ml Fernet Branca" },
+      { name: "White Negroni", category: "Modern Classic", profile: "Floral • Bittersweet • Crisp", glass: "rocks", liquid: "#FEF3C7", garnish: "citrus", spirits: ["Gin"], liqueurs: ["Dry Vermouth"], mixers: [], notes: "A luminous twist on the Negroni using botanical gin, Gentian/Suze, and white/dry vermouth.", specs: "30ml Gin • 30ml Gentian Liqueur • 30ml Dry/White Vermouth" },
+      { name: "Gin & Juice", category: "Highball", profile: "Fruity • Sunny • Easy", glass: "highball", liquid: "#FB923C", garnish: "citrus", spirits: ["Gin"], liqueurs: [], mixers: ["Orange Juice"], notes: "Bright, approachable citrus highball pairing botanical gin with chilled orange juice.", specs: "50ml Gin • 110ml Fresh Orange Juice • Orange Slice" },
+
+      // 21-40: Whisky Classics
+      { name: "Old Fashioned", category: "The Unforgettables", profile: "Oak • Bittersweet • Timeless", glass: "rocks", liquid: "#B45309", garnish: "citrus", spirits: ["Whisky"], liqueurs: [], mixers: [], notes: "Bourbon or rye stirred with sugar, Angostura bitters, and expressed orange peel.", specs: "60ml Bourbon/Rye • 1 Sugar Cube • 3 Dashes Angostura • Orange Peel" },
+      { name: "Whisky Sour", category: "The Unforgettables", profile: "Tart • Silky • Balanced", glass: "rocks", liquid: "#FBBF24", garnish: "citrus", spirits: ["Whisky"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Whisky shaken briskly with fresh lemon juice and simple syrup.", specs: "60ml Bourbon • 25ml Fresh Lemon Juice • 15ml Simple Syrup" },
+      { name: "Manhattan", category: "The Unforgettables", profile: "Aromatic • Rich • Velvety", glass: "coupe", liquid: "#991B1B", garnish: "cherry", spirits: ["Whisky"], liqueurs: ["Sweet Vermouth"], mixers: [], notes: "Rye or bourbon stirred with sweet vermouth and bitters, finished with a cherry.", specs: "50ml Rye Whisky • 20ml Sweet Vermouth • 2 Dashes Angostura" },
+      { name: "Boulevardier", category: "The Unforgettables", profile: "Warm • Bitter • Oak-Spiced", glass: "rocks", liquid: "#B91C1C", garnish: "citrus", spirits: ["Whisky"], liqueurs: ["Campari", "Sweet Vermouth"], mixers: [], notes: "Bourbon-backed Negroni cousin with deep caramel and bittersweet notes.", specs: "45ml Bourbon • 30ml Campari • 30ml Sweet Vermouth" },
+      { name: "Paper Plane", category: "New Era", profile: "Tart • Bitter-Sweet • Modern", glass: "coupe", liquid: "#F97316", garnish: "none", spirits: ["Whisky"], liqueurs: ["Aperol"], mixers: ["Lemon / Lime Juice"], notes: "Equal-parts modern classic pairing bourbon, Aperol, Amaro Nonino, and lemon.", specs: "22.5ml each Bourbon, Aperol, Amaro Nonino, Lemon Juice" },
+      { name: "Whisky Highball", category: "Japanese Classic", profile: "Crisp • Effervescent • Clean", glass: "highball", liquid: "#FDE68A", garnish: "citrus", spirits: ["Whisky"], liqueurs: [], mixers: ["Soda Water"], notes: "Chilled whisky poured over large ice and topped with brisk soda water.", specs: "45ml Whisky • 135ml Cold Soda Water • Lemon Twist" },
+      { name: "Godfather", category: "Classic Duo", profile: "Nutty • Sweet • Smooth", glass: "rocks", liquid: "#92400E", garnish: "none", spirits: ["Whisky"], liqueurs: ["Amaretto"], mixers: [], notes: "Whisky and almond amaretto stirred gently over ice.", specs: "45ml Scotch/Bourbon • 25ml Amaretto" },
+      { name: "Irish Coffee", category: "Contemporary Classics", profile: "Warm • Roasted • Creamy", glass: "irish", liquid: "#451A03", garnish: "coffee", spirits: ["Whisky"], liqueurs: [], mixers: ["Espresso", "Cream / Milk"], notes: "Hot coffee spiked with Irish whiskey and sugar under cold lightly whipped cream.", specs: "50ml Irish Whiskey • 120ml Hot Coffee/Espresso • 15ml Sugar • Cream" },
+      { name: "Mint Julep", category: "Contemporary Classics", profile: "Minty • Frosty • Bourbon", glass: "rocks", liquid: "#D97706", garnish: "mint", spirits: ["Whisky"], liqueurs: [], mixers: [], notes: "Bourbon, crushed ice, sugar, and fresh mint leaves.", specs: "60ml Bourbon • 10 Mint Leaves • 10ml Syrup • Crushed Ice" },
+      { name: "Rob Roy", category: "The Unforgettables", profile: "Scotch • Herbal • Smooth", glass: "coupe", liquid: "#7F1D1D", garnish: "cherry", spirits: ["Whisky"], liqueurs: ["Sweet Vermouth"], mixers: [], notes: "Scotch whisky stirred with sweet vermouth and bitters.", specs: "50ml Scotch Whisky • 20ml Sweet Vermouth • 2 Dashes Bitters" },
+      { name: "Penicillin", category: "New Era", profile: "Ginger • Honey • Smoky", glass: "rocks", liquid: "#F59E0B", garnish: "citrus", spirits: ["Whisky"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Blended Scotch, lemon, honey-ginger syrup, and a smoky Islay float.", specs: "60ml Blended Scotch • 20ml Lemon • 20ml Honey-Ginger • 7.5ml Islay Float" },
+      { name: "New York Sour", category: "Contemporary Twist", profile: "Tart • Citrus • Red Wine Float", glass: "rocks", liquid: "#E11D48", garnish: "citrus", spirits: ["Whisky"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Whisky Sour floated with dry red wine for color, tannin, and aroma.", specs: "60ml Bourbon • 25ml Lemon • 15ml Syrup • 15ml Red Wine Float" },
+      { name: "Gold Rush", category: "New Era", profile: "Honey • Lemon • Rich", glass: "rocks", liquid: "#FBBF24", garnish: "citrus", spirits: ["Whisky"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Bourbon, fresh lemon juice, and golden honey syrup shaken over ice.", specs: "60ml Bourbon • 20ml Lemon Juice • 20ml Honey Syrup" },
+      { name: "Rusty Nail", category: "The Unforgettables", profile: "Honey-Herb • Smoky • Warm", glass: "rocks", liquid: "#B45309", garnish: "citrus", spirits: ["Whisky"], liqueurs: [], mixers: [], notes: "Scotch whisky and Drambuie stirred over ice.", specs: "45ml Scotch Whisky • 25ml Drambuie" },
+      { name: "Sazerac", category: "The Unforgettables", profile: "Anise • Rye • Aromatic", glass: "rocks", liquid: "#D97706", garnish: "citrus", spirits: ["Whisky"], liqueurs: [], mixers: [], notes: "New Orleans classic with rye, Peychaud's bitters, sugar, and an absinthe rinse.", specs: "60ml Rye • 1 Sugar Cube • 4 Dashes Peychaud's • Absinthe Rinse" },
+      { name: "Whisky & Ginger", category: "Highball", profile: "Spicy • Crisp • Warming", glass: "highball", liquid: "#EAB308", garnish: "citrus", spirits: ["Whisky"], liqueurs: [], mixers: ["Ginger Beer"], notes: "Whisky lengthened with zesty ginger beer over ice.", specs: "50ml Whisky • 120ml Ginger Beer • Lime Wedge" },
+      { name: "Blood and Sand", category: "The Unforgettables", profile: "Smoky • Citrus • Ruby", glass: "coupe", liquid: "#DC2626", garnish: "citrus", spirits: ["Whisky"], liqueurs: ["Sweet Vermouth"], mixers: ["Orange Juice"], notes: "Scotch, cherry liqueur, sweet vermouth, and orange juice.", specs: "25ml Scotch • 20ml Cherry Liqueur • 20ml Sweet Vermouth • 20ml Orange Juice" },
+      { name: "Ward 8", category: "Classic Sour", profile: "Citrus • Cranberry • Crisp", glass: "coupe", liquid: "#FB7185", garnish: "cherry", spirits: ["Whisky"], liqueurs: [], mixers: ["Orange Juice", "Lemon / Lime Juice", "Cranberry Juice"], notes: "Boston classic shaking rye/whisky with lemon, orange, and grenadine/berry touch.", specs: "50ml Whisky • 15ml Lemon • 15ml Orange • 15ml Grenadine" },
+      { name: "Kentucky Buck", category: "Modern Highball", profile: "Berry • Ginger • Bright", glass: "highball", liquid: "#F43F5E", garnish: "citrus", spirits: ["Whisky"], liqueurs: [], mixers: ["Lemon / Lime Juice", "Ginger Beer"], notes: "Bourbon, muddled berry, lemon, and bitters topped with ginger beer.", specs: "50ml Bourbon • 15ml Lemon • Muddled Berry • Top Ginger Beer" },
+      { name: "Hot Toddy", category: "Warm Classic", profile: "Soothing • Honey • Lemon", glass: "irish", liquid: "#F59E0B", garnish: "citrus", spirits: ["Whisky"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Warming blend of whisky, honey, lemon juice, and hot water/tea.", specs: "50ml Whisky • 15ml Honey • 15ml Lemon • 100ml Hot Water" },
+
+      // 41-60: Rum Classics
+      { name: "Daiquiri", category: "The Unforgettables", profile: "Tart • Crisp • Cuban", glass: "coupe", liquid: "#FEF08A", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "White rum, fresh lime juice, and sugar shaken until ice-cold.", specs: "60ml White Rum • 25ml Fresh Lime Juice • 15ml Syrup" },
+      { name: "Mojito", category: "Contemporary Classics", profile: "Mint • Lime • Bubbly", glass: "highball", liquid: "#A7F3D0", garnish: "mint", spirits: ["Rum"], liqueurs: [], mixers: ["Lemon / Lime Juice", "Soda Water"], notes: "Rum, fresh mint, lime, sugar, and crushed ice topped with soda.", specs: "45ml White Rum • 20ml Lime • 6 Mint Sprigs • 15ml Syrup • Soda" },
+      { name: "Cuba Libre", category: "Contemporary Classics", profile: "Cola • Lime • Easy", glass: "highball", liquid: "#451A03", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Cola", "Lemon / Lime Juice"], notes: "Rum and chilled cola brightened with fresh lime juice.", specs: "50ml Rum • 120ml Cola • 10ml Fresh Lime Juice" },
+      { name: "Piña Colada", category: "Contemporary Classics", profile: "Coconut • Pineapple • Creamy", glass: "tiki", liquid: "#FEF9C3", garnish: "pineapple", spirits: ["Rum"], liqueurs: ["Malibu"], mixers: ["Pineapple Juice", "Cream / Milk"], notes: "Rum and coconut blended with pineapple juice and cream.", specs: "50ml White Rum • 30ml Coconut Cream • 90ml Pineapple Juice" },
+      { name: "Dark 'n' Stormy", category: "New Era", profile: "Ginger • Molasses • Spicy", glass: "highball", liquid: "#78350F", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Ginger Beer", "Lemon / Lime Juice"], notes: "Dark rum layered over spicy ginger beer and fresh lime.", specs: "60ml Dark Rum • 100ml Ginger Beer • 15ml Lime Juice" },
+      { name: "Mai Tai", category: "Contemporary Classics", profile: "Almond • Citrus • Tiki", glass: "tiki", liquid: "#F59E0B", garnish: "mint", spirits: ["Rum"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Lemon / Lime Juice"], notes: "Aged rum, orange curaçao, orgeat, and fresh lime.", specs: "45ml Aged Rum • 15ml Cointreau/Curaçao • 15ml Orgeat • 25ml Lime" },
+      { name: "Zombie", category: "Tiki Classic", profile: "Tropical • Bold • Spiced", glass: "tiki", liquid: "#EA580C", garnish: "pineapple", spirits: ["Rum"], liqueurs: [], mixers: ["Pineapple Juice", "Orange Juice", "Lemon / Lime Juice"], notes: "Multi-rum tiki classic layered with pineapple, orange, and lime.", specs: "60ml Rum Blend • 45ml Pineapple • 30ml Orange • 20ml Lime" },
+      { name: "Blue Hawaiian", category: "Tropical Classic", profile: "Blue Curaçao • Coconut • Sunny", glass: "tiki", liquid: "#38BDF8", garnish: "pineapple", spirits: ["Rum"], liqueurs: ["Blue Curaçao", "Malibu"], mixers: ["Pineapple Juice", "Cream / Milk"], notes: "Vibrant blue tropical drink with rum, Blue Curaçao, coconut, and pineapple.", specs: "30ml Rum • 15ml Blue Curaçao • 15ml Malibu • 60ml Pineapple • 20ml Cream" },
+      { name: "Hemingway Daiquiri", category: "The Unforgettables", profile: "Grapefruit • Maraschino • Crisp", glass: "coupe", liquid: "#FDA4AF", garnish: "citrus", spirits: ["Rum"], liqueurs: ["Maraschino"], mixers: ["Lemon / Lime Juice", "Grapefruit Juice"], notes: "Rum, fresh lime, grapefruit juice, and maraschino liqueur.", specs: "60ml White Rum • 40ml Grapefruit • 15ml Lime • 15ml Maraschino" },
+      { name: "Hurricane", category: "New Orleans Classic", profile: "Passionfruit • Citrus • Fruity", glass: "tiki", liquid: "#E11D48", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Orange Juice", "Lemon / Lime Juice"], notes: "Light and dark rums shaken with citrus and passionfruit syrup.", specs: "45ml Dark Rum • 45ml Light Rum • 30ml Passionfruit • 20ml Citrus" },
+      { name: "Planter's Punch", category: "Tiki Classic", profile: "Spiced • Citrus • Tropical", glass: "tiki", liquid: "#F97316", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Orange Juice", "Pineapple Juice", "Lemon / Lime Juice"], notes: "Aged rum, lime, orange/pineapple juice, grenadine, and bitters.", specs: "60ml Aged Rum • 20ml Lime • 45ml Orange/Pineapple • 10ml Grenadine" },
+      { name: "El Presidente", category: "Classic Spirituous", profile: "Dry Vermouth • Orange • Smooth", glass: "coupe", liquid: "#FBBF24", garnish: "citrus", spirits: ["Rum"], liqueurs: ["Cointreau / Triple Sec", "Dry Vermouth"], mixers: [], notes: "Aged rum stirred with dry vermouth, Cointreau, and a touch of grenadine.", specs: "45ml Aged Rum • 22.5ml Dry Vermouth • 7.5ml Cointreau • 5ml Grenadine" },
+      { name: "Rum Runner", category: "Tropical Classic", profile: "Banana • Berry • Tropical", glass: "tiki", liquid: "#F43F5E", garnish: "pineapple", spirits: ["Rum"], liqueurs: ["Peach Schnapps"], mixers: ["Orange Juice", "Pineapple Juice"], notes: "Fruity island blend of rum, banana/peach liqueur, orange, and pineapple.", specs: "45ml Rum • 15ml Banana/Peach Liqueur • 45ml Orange • 45ml Pineapple" },
+      { name: "Painkiller", category: "Island Classic", profile: "Creamy • Nutmeg • Pineapple", glass: "tiki", liquid: "#FDE68A", garnish: "pineapple", spirits: ["Rum"], liqueurs: ["Malibu"], mixers: ["Pineapple Juice", "Orange Juice", "Cream / Milk"], notes: "Rum, pineapple, orange juice, and coconut cream topped with nutmeg.", specs: "60ml Rum • 90ml Pineapple • 30ml Orange • 30ml Coconut Cream" },
+      { name: "Daiquiri Floridita", category: "Classic Sour", profile: "Icy • Lime • Smooth", glass: "coupe", liquid: "#DCFCE7", garnish: "citrus", spirits: ["Rum"], liqueurs: ["Maraschino"], mixers: ["Lemon / Lime Juice"], notes: "Shaken or blended white rum, lime, sugar, and a splash of maraschino.", specs: "60ml White Rum • 25ml Lime Juice • 15ml Syrup • 5ml Maraschino" },
+      { name: "Banana Daiquiri", category: "Tropical Sour", profile: "Banana • Lime • Velvety", glass: "coupe", liquid: "#FEF08A", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Rum and fresh lime blended with ripe banana and sugar.", specs: "50ml Rum • 20ml Lime Juice • 15ml Syrup • 1/2 Ripe Banana" },
+      { name: "Rum & Cola", category: "Highball", profile: "Classic • Caramel • Crisp", glass: "highball", liquid: "#451A03", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Cola"], notes: "Straightforward highball of rum and chilled cola over ice.", specs: "50ml Rum • 120ml Cola • Lime Wedge" },
+      { name: "Rum Swizzle", category: "Caribbean Classic", profile: "Lime • Spiced • Frosty", glass: "highball", liquid: "#A3E635", garnish: "mint", spirits: ["Rum"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Rum, lime, syrup, and bitters swizzled over crushed ice.", specs: "60ml Rum • 25ml Lime Juice • 15ml Syrup • 3 Dashes Bitters" },
+      { name: "Bacardi Cocktail", category: "The Unforgettables", profile: "Lime • Ruby • Crisp", glass: "coupe", liquid: "#FDA4AF", garnish: "none", spirits: ["Rum"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "White rum shaken with fresh lime and grenadine syrup.", specs: "45ml White Rum • 20ml Lime Juice • 10ml Grenadine" },
+      { name: "Caipirinha", category: "Brazilian Classic", profile: "Cachaça/Rum • Lime • Cane", glass: "rocks", liquid: "#BEF264", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Muddled fresh lime wedges and sugar topped with spirit over ice.", specs: "50ml Cane Spirit/Rum • 1/2 Lime (4 Wedges) • 15ml Syrup" },
+
+      // 61-78: Tequila Classics
+      { name: "Margarita", category: "Contemporary Classics", profile: "Lime • Cointreau • Salted", glass: "coupe", liquid: "#BEF264", garnish: "salt", spirits: ["Tequila"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Lemon / Lime Juice"], notes: "Tequila, Cointreau, and fresh lime juice served in a salt-rimmed glass.", specs: "50ml Tequila • 20ml Cointreau • 20ml Lime Juice • Salt Rim" },
+      { name: "Paloma", category: "New Era", profile: "Grapefruit • Bubbly • Crisp", glass: "highball", liquid: "#FDA4AF", garnish: "salt", spirits: ["Tequila"], liqueurs: [], mixers: ["Soda Water", "Lemon / Lime Juice", "Grapefruit Juice"], notes: "Tequila, grapefruit juice, lime, and soda water with a pinch of salt.", specs: "50ml Tequila • 60ml Grapefruit • 15ml Lime • Soda Water" },
+      { name: "Tequila Sunrise", category: "Contemporary Classics", profile: "Orange • Sweet • Layered", glass: "highball", liquid: "#FB923C", garnish: "citrus", spirits: ["Tequila"], liqueurs: [], mixers: ["Orange Juice"], notes: "Tequila and orange juice with a sinking ribbon of grenadine.", specs: "45ml Tequila • 90ml Orange Juice • 15ml Grenadine" },
+      { name: "Mexican Mule", category: "Contemporary Twist", profile: "Ginger • Lime • Agave", glass: "highball", liquid: "#FDE047", garnish: "citrus", spirits: ["Tequila"], liqueurs: [], mixers: ["Ginger Beer", "Lemon / Lime Juice"], notes: "Tequila and fresh lime lengthened with spicy ginger beer.", specs: "50ml Tequila • 15ml Lime Juice • 120ml Ginger Beer" },
+      { name: "Tommy's Margarita", category: "New Era", profile: "Agave • Lime • Pure", glass: "rocks", liquid: "#D9F99D", garnish: "citrus", spirits: ["Tequila"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Tequila, fresh lime, and agave nectar without orange liqueur.", specs: "60ml Tequila • 30ml Lime Juice • 15ml Agave Nectar" },
+      { name: "Matador", category: "Classic Sour", profile: "Pineapple • Lime • Tropical", glass: "coupe", liquid: "#FACC15", garnish: "citrus", spirits: ["Tequila"], liqueurs: [], mixers: ["Pineapple Juice", "Lemon / Lime Juice"], notes: "Tequila shaken with pineapple juice and fresh lime.", specs: "50ml Tequila • 45ml Pineapple Juice • 15ml Lime Juice" },
+      { name: "Brave Bull", category: "Classic Duo", profile: "Coffee • Agave • Rich", glass: "rocks", liquid: "#451A03", garnish: "none", spirits: ["Tequila"], liqueurs: ["Coffee Liqueur"], mixers: [], notes: "Tequila and coffee liqueur stirred over ice.", specs: "45ml Tequila • 22.5ml Coffee Liqueur" },
+      { name: "El Diablo", category: "Highball", profile: "Ginger • Berry • Crisp", glass: "highball", liquid: "#E11D48", garnish: "citrus", spirits: ["Tequila"], liqueurs: [], mixers: ["Ginger Beer", "Lemon / Lime Juice"], notes: "Tequila, crème de cassis, lime, and ginger beer.", specs: "45ml Tequila • 15ml Cassis • 15ml Lime • Ginger Beer" },
+      { name: "Siesta", category: "Modern Classic", profile: "Campari • Grapefruit • Bitter-Sweet", glass: "coupe", liquid: "#FB7185", garnish: "citrus", spirits: ["Tequila"], liqueurs: ["Campari"], mixers: ["Lemon / Lime Juice", "Grapefruit Juice"], notes: "Tequila, Campari, fresh lime, grapefruit juice, and syrup.", specs: "45ml Tequila • 15ml Campari • 15ml Lime • 15ml Grapefruit • 10ml Syrup" },
+      { name: "Naked and Famous", category: "New Era", profile: "Smoky-Citrus • Aperol • Herbal", glass: "coupe", liquid: "#F97316", garnish: "none", spirits: ["Tequila"], liqueurs: ["Aperol", "Green Chartreuse"], mixers: ["Lemon / Lime Juice"], notes: "Equal-parts modern classic pairing agave spirit, Aperol, Chartreuse, and lime.", specs: "22.5ml each Agave Spirit, Aperol, Green Chartreuse, Lime" },
+      { name: "Batanga", category: "Mexican Highball", profile: "Cola • Lime • Salted Rim", glass: "highball", liquid: "#451A03", garnish: "salt", spirits: ["Tequila"], liqueurs: [], mixers: ["Cola", "Lemon / Lime Juice"], notes: "Tequila, fresh lime, and cola in a salt-rimmed glass.", specs: "50ml Tequila • 15ml Lime • 120ml Cola • Salt Rim" },
+      { name: "Lone Tree Cooler", category: "Highball", profile: "Citrus • Herbal • Bubbly", glass: "highball", liquid: "#BEF264", garnish: "citrus", spirits: ["Tequila"], liqueurs: ["Midori"], mixers: ["Soda Water", "Lemon / Lime Juice"], notes: "Tequila, melon liqueur, lime, and soda water.", specs: "45ml Tequila • 15ml Midori • 15ml Lime • Soda Water" },
+      { name: "Tequila & Tonic", category: "Highball", profile: "Botanical • Citrus • Crisp", glass: "highball", liquid: "#BAE6FD", garnish: "citrus", spirits: ["Tequila"], liqueurs: [], mixers: ["Tonic Water", "Lemon / Lime Juice"], notes: "Tequila topped with tonic water and a squeeze of lime.", specs: "50ml Tequila • 120ml Tonic Water • Lime Wedge" },
+      { name: "Cadillac Margarita", category: "Classic Sour", profile: "Rich Orange • Lime • Silky", glass: "rocks", liquid: "#FDE047", garnish: "salt", spirits: ["Tequila"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Lemon / Lime Juice"], notes: "Tequila, lime, and Cointreau with a rich liqueur float.", specs: "50ml Tequila • 20ml Cointreau • 20ml Lime • 10ml Grand Marnier Float" },
+      { name: "Sunburn", category: "Highball", profile: "Cranberry • Lime • Refreshing", glass: "highball", liquid: "#F43F5E", garnish: "citrus", spirits: ["Tequila"], liqueurs: [], mixers: ["Cranberry Juice", "Lemon / Lime Juice"], notes: "Tequila shaken with cranberry juice and fresh lime.", specs: "45ml Tequila • 90ml Cranberry Juice • 15ml Lime Juice" },
+      { name: "Rosita", category: "Classic Spirituous", profile: "Bitter • Vermouth • Agave", glass: "rocks", liquid: "#B91C1C", garnish: "citrus", spirits: ["Tequila"], liqueurs: ["Campari", "Sweet Vermouth", "Dry Vermouth"], mixers: [], notes: "Tequila stirred with Campari, sweet vermouth, and dry vermouth.", specs: "45ml Tequila • 15ml Campari • 15ml Sweet Vermouth • 15ml Dry Vermouth" },
+      { name: "Panch Villa", category: "Highball", profile: "Orange • Crisp • Bubbly", glass: "highball", liquid: "#FB923C", garnish: "citrus", spirits: ["Tequila"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Orange Juice", "Soda Water"], notes: "Tequila, orange liqueur, and orange juice with a splash of soda.", specs: "45ml Tequila • 15ml Cointreau • 75ml Orange Juice • Soda" },
+      { name: "Cantina Fizz", category: "Highball", profile: "Lime • Ginger • Bright", glass: "highball", liquid: "#A3E635", garnish: "mint", spirits: ["Tequila"], liqueurs: [], mixers: ["Lemon / Lime Juice", "Ginger Beer", "Soda Water"], notes: "Bright tequila cooler with lime, mint, and ginger fizz.", specs: "45ml Tequila • 20ml Lime • 15ml Syrup • Ginger Beer & Soda" },
+
+      // 79-91: Vodka Classics
+      { name: "Espresso Martini", category: "New Era", profile: "Espresso • Coffee • Silky", glass: "martini", liquid: "#451A03", garnish: "coffee", spirits: ["Vodka"], liqueurs: ["Coffee Liqueur"], mixers: ["Espresso"], notes: "Fresh espresso shaken with vodka and coffee liqueur.", specs: "50ml Vodka • 30ml Coffee Liqueur • 30ml Espresso • 5ml Syrup" },
+      { name: "Moscow Mule", category: "Contemporary Classics", profile: "Ginger • Lime • Crisp", glass: "highball", liquid: "#FDE047", garnish: "citrus", spirits: ["Vodka"], liqueurs: [], mixers: ["Ginger Beer", "Lemon / Lime Juice"], notes: "Vodka, fresh lime juice, and spicy ginger beer over ice.", specs: "45ml Vodka • 15ml Lime Juice • 120ml Ginger Beer" },
+      { name: "Cosmopolitan", category: "Contemporary Classics", profile: "Cranberry • Citrus • Tart", glass: "martini", liquid: "#F472B6", garnish: "citrus", spirits: ["Vodka"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Cranberry Juice", "Lemon / Lime Juice"], notes: "Vodka, Cointreau, lime, and cranberry juice shaken until crisp.", specs: "40ml Vodka • 15ml Cointreau • 15ml Lime • 30ml Cranberry Juice" },
+      { name: "White Russian", category: "Classic Creamy", profile: "Coffee • Cream • Decadent", glass: "rocks", liquid: "#D6D3D1", garnish: "none", spirits: ["Vodka"], liqueurs: ["Coffee Liqueur"], mixers: ["Cream / Milk"], notes: "Vodka and coffee liqueur over ice topped with cream.", specs: "50ml Vodka • 25ml Coffee Liqueur • 25ml Cream" },
+      { name: "Black Russian", category: "Contemporary Classics", profile: "Coffee • Bold • Clean", glass: "rocks", liquid: "#292524", garnish: "none", spirits: ["Vodka"], liqueurs: ["Coffee Liqueur"], mixers: [], notes: "Vodka and coffee liqueur stirred over ice.", specs: "50ml Vodka • 20ml Coffee Liqueur" },
+      { name: "Screwdriver", category: "Classic Duo", profile: "Orange • Bright • Simple", glass: "highball", liquid: "#FB923C", garnish: "citrus", spirits: ["Vodka"], liqueurs: [], mixers: ["Orange Juice"], notes: "Vodka and chilled orange juice served over ice.", specs: "50ml Vodka • 100ml Orange Juice" },
+      { name: "Sex on the Beach", category: "Contemporary Classics", profile: "Peach • Berry • Fruity", glass: "highball", liquid: "#FB7185", garnish: "citrus", spirits: ["Vodka"], liqueurs: ["Peach Schnapps"], mixers: ["Orange Juice", "Cranberry Juice"], notes: "Vodka, peach schnapps, orange juice, and cranberry juice.", specs: "40ml Vodka • 20ml Peach Schnapps • 40ml Orange • 40ml Cranberry" },
+      { name: "Midori Sour", category: "Modern Classic", profile: "Melon • Tart • Vibrant", glass: "rocks", liquid: "#84CC16", garnish: "citrus", spirits: ["Vodka"], liqueurs: ["Midori"], mixers: ["Lemon / Lime Juice", "Soda Water"], notes: "Midori melon liqueur and vodka with citrus and a splash of soda.", specs: "30ml Midori • 20ml Vodka • 20ml Lemon/Lime • Splash Soda" },
+      { name: "Godmother", category: "Classic Duo", profile: "Almond • Smooth • Sweet", glass: "rocks", liquid: "#D97706", garnish: "none", spirits: ["Vodka"], liqueurs: ["Amaretto"], mixers: [], notes: "Vodka and amaretto stirred over ice.", specs: "45ml Vodka • 25ml Amaretto" },
+      { name: "Bloody Mary", category: "Contemporary Classics", profile: "Savory • Tomato • Spiced", glass: "highball", liquid: "#EF4444", garnish: "citrus", spirits: ["Vodka"], liqueurs: [], mixers: ["Tomato Juice", "Lemon / Lime Juice"], notes: "Savory tomato-juice classic with vodka, lemon, and spice.", specs: "45ml Vodka • 90ml Tomato Juice • 15ml Lemon • Spice & Seasoning" },
+      { name: "Sea Breeze", category: "Classic Highball", profile: "Cranberry • Grapefruit • Crisp", glass: "highball", liquid: "#FDA4AF", garnish: "citrus", spirits: ["Vodka"], liqueurs: [], mixers: ["Cranberry Juice", "Grapefruit Juice"], notes: "Vodka with tart cranberry and bright grapefruit juice.", specs: "45ml Vodka • 75ml Cranberry Juice • 45ml Grapefruit Juice" },
+      { name: "Cape Codder", category: "Classic Highball", profile: "Cranberry • Lime • Refreshing", glass: "highball", liquid: "#F43F5E", garnish: "citrus", spirits: ["Vodka"], liqueurs: [], mixers: ["Cranberry Juice", "Lemon / Lime Juice"], notes: "Vodka and cranberry juice with a fresh lime squeeze.", specs: "50ml Vodka • 100ml Cranberry Juice • Lime Wedge" },
+      { name: "Lemon Drop Martini", category: "Modern Classic", profile: "Lemon • Sugared • Crisp", glass: "martini", liquid: "#FEF08A", garnish: "citrus", spirits: ["Vodka"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Lemon / Lime Juice"], notes: "Vodka, Cointreau, and fresh lemon juice shaken until icy.", specs: "45ml Vodka • 15ml Cointreau • 20ml Lemon Juice • 10ml Syrup" },
+
+      // 92-96: Brandy Classics
+      { name: "Sidecar", category: "The Unforgettables", profile: "Cognac • Citrus • Classic", glass: "coupe", liquid: "#FBBF24", garnish: "citrus", spirits: ["Brandy"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Lemon / Lime Juice"], notes: "Brandy/Cognac, Cointreau, and fresh lemon juice.", specs: "50ml Cognac • 20ml Cointreau • 20ml Lemon Juice" },
+      { name: "Brandy Alexander", category: "The Unforgettables", profile: "Cocoa • Cream • Dessert", glass: "coupe", liquid: "#E7E5E4", garnish: "none", spirits: ["Brandy"], liqueurs: ["Crème de Cacao"], mixers: ["Cream / Milk"], notes: "Brandy, crème de cacao, and cream dusted with nutmeg.", specs: "30ml Cognac • 30ml Crème de Cacao • 30ml Cream • Nutmeg" },
+      { name: "Between the Sheets", category: "The Unforgettables", profile: "Brandy • Rum • Citrus", glass: "coupe", liquid: "#F59E0B", garnish: "citrus", spirits: ["Brandy", "Rum"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Lemon / Lime Juice"], notes: "Cognac and white rum shaken with Cointreau and lemon.", specs: "30ml Cognac • 30ml White Rum • 30ml Cointreau • 20ml Lemon" },
+      { name: "French Connection", category: "Contemporary Classics", profile: "Cognac • Almond • Warm", glass: "rocks", liquid: "#B45309", garnish: "none", spirits: ["Brandy"], liqueurs: ["Amaretto"], mixers: [], notes: "Cognac and amaretto stirred over ice.", specs: "35ml Cognac • 35ml Amaretto" },
+      { name: "Stinger", category: "Digestif Classic", profile: "Mint • Brandy • Crisp", glass: "coupe", liquid: "#A7F3D0", garnish: "mint", spirits: ["Brandy"], liqueurs: [], mixers: [], notes: "Brandy and white crème de menthe shaken and strained.", specs: "50ml Brandy • 20ml White Crème de Menthe" },
+
+      // 97-100: Liqueur & Aperitivo Classics
+      { name: "Aperol Spritz", category: "New Era", profile: "Aperol • Bubbly • Bitter-Sweet", glass: "highball", liquid: "#F97316", garnish: "citrus", spirits: [], liqueurs: ["Aperol"], mixers: ["Soda Water"], notes: "Aperol with sparkling wine/soda and an orange slice.", specs: "60ml Aperol • 90ml Prosecco • 30ml Soda Water • Orange Slice" },
+      { name: "Americano", category: "The Unforgettables", profile: "Campari • Vermouth • Crisp", glass: "highball", liquid: "#DC2626", garnish: "citrus", spirits: [], liqueurs: ["Campari", "Sweet Vermouth"], mixers: ["Soda Water"], notes: "Campari and sweet vermouth topped with soda water.", specs: "30ml Campari • 30ml Sweet Vermouth • Splash Soda Water" },
+      { name: "B-52", category: "Layered Shooter", profile: "Coffee • Baileys • Orange", glass: "rocks", liquid: "#92400E", garnish: "none", spirits: [], liqueurs: ["Coffee Liqueur", "Baileys", "Cointreau / Triple Sec"], mixers: [], notes: "Layered coffee liqueur, Baileys, and orange liqueur.", specs: "20ml Coffee Liqueur • 20ml Baileys • 20ml Cointreau/Grand Marnier" },
+      { name: "Hugo Spritz", category: "Spritz Classic", profile: "Elderflower • Mint • Sparkling", glass: "highball", liquid: "#D9F99D", garnish: "mint", spirits: [], liqueurs: ["St-Germain"], mixers: ["Soda Water"], notes: "Elderflower liqueur, fresh mint, lime, and sparkling soda.", specs: "30ml St-Germain • 90ml Prosecco • 30ml Soda • Mint & Lime" }
+    ];
+
+    // Sort Category III (Mixers) by number of matching cocktails descending
+    function getSortedMixers() {
+      const counts = {};
+      ingredientCategories.mixers.forEach(m => {
+        counts[m] = cocktails.filter(c => c.mixers.includes(m)).length;
+      });
+      return [...ingredientCategories.mixers]
+        .sort((a, b) => counts[b] - counts[a] || a.localeCompare(b))
+        .map(name => ({ name, count: counts[name] }));
+    }
+
+    const sortedMixers = getSortedMixers();
+
+    // Minimalist Hand-Drawn SVG Artwork Generator per Cocktail
+    function renderCocktailIllustration(drink) {
+      const stroke = "#E5E7EB";
+      const accentStroke = "#FACC15";
+      const fill = drink.liquid || "#FBBF24";
+
+      let glassSvg = "";
+      if (drink.glass === "martini") {
+        glassSvg = `
+          <polygon points="26,22 74,22 50,52" fill="${fill}" fill-opacity="0.32" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/>
+          <line x1="50" y1="52" x2="50" y2="78" stroke="${stroke}" stroke-width="1.6" stroke-linecap="round"/>
+          <line x1="35" y1="78" x2="65" y2="78" stroke="${stroke}" stroke-width="1.6" stroke-linecap="round"/>
+        `;
+      } else if (drink.glass === "coupe") {
+        glassSvg = `
+          <path d="M27,28 Q27,51 50,51 Q73,51 73,28 Z" fill="${fill}" fill-opacity="0.32" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/>
+          <line x1="50" y1="51" x2="50" y2="78" stroke="${stroke}" stroke-width="1.6" stroke-linecap="round"/>
+          <line x1="36" y1="78" x2="64" y2="78" stroke="${stroke}" stroke-width="1.6" stroke-linecap="round"/>
+        `;
+      } else if (drink.glass === "highball") {
+        glassSvg = `
+          <rect x="33" y="20" width="34" height="58" rx="4" fill="${fill}" fill-opacity="0.28" stroke="${stroke}" stroke-width="1.6"/>
+          <line x1="35" y1="34" x2="65" y2="34" stroke="${stroke}" stroke-width="1.1" stroke-dasharray="2 2" opacity="0.7"/>
+        `;
+      } else if (drink.glass === "tiki") {
+        glassSvg = `
+          <path d="M34,20 L66,20 L61,78 L39,78 Z" fill="${fill}" fill-opacity="0.32" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/>
+          <line x1="36" y1="38" x2="64" y2="38" stroke="${stroke}" stroke-width="1.1" opacity="0.6"/>
+        `;
+      } else if (drink.glass === "irish") {
+        glassSvg = `
+          <path d="M35,24 H65 L60,68 H40 Z" fill="${fill}" fill-opacity="0.34" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M63,34 Q73,34 73,46 Q73,57 61,58" fill="none" stroke="${stroke}" stroke-width="1.6" stroke-linecap="round"/>
+          <rect x="37" y="72" width="26" height="6" rx="2" fill="${stroke}" fill-opacity="0.25" stroke="${stroke}" stroke-width="1.4"/>
+        `;
+      } else {
+        // rocks
+        glassSvg = `
+          <path d="M31,32 H69 L66,76 H34 Z" fill="${fill}" fill-opacity="0.32" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/>
+          <rect x="39" y="42" width="12" height="12" rx="2" transform="rotate(-10 45 48)" fill="none" stroke="${stroke}" stroke-width="1.1" opacity="0.65"/>
+        `;
+      }
+
+      let garnishSvg = "";
+      if (drink.garnish === "citrus") {
+        garnishSvg = `
+          <circle cx="67" cy="24" r="8" fill="${accentStroke}" fill-opacity="0.25" stroke="${accentStroke}" stroke-width="1.4"/>
+          <line x1="67" y1="16" x2="67" y2="32" stroke="${accentStroke}" stroke-width="1"/>
+          <line x1="59" y1="24" x2="75" y2="24" stroke="${accentStroke}" stroke-width="1"/>
+        `;
+      } else if (drink.garnish === "mint") {
+        garnishSvg = `
+          <path d="M56,22 Q64,12 72,18 Q65,26 56,22 Z" fill="#4ADE80" fill-opacity="0.3" stroke="#4ADE80" stroke-width="1.3"/>
+          <path d="M52,24 Q45,14 39,20 Q46,27 52,24 Z" fill="#4ADE80" fill-opacity="0.25" stroke="#4ADE80" stroke-width="1.3"/>
+        `;
+      } else if (drink.garnish === "cherry" || drink.garnish === "olive") {
+        const gColor = drink.garnish === "cherry" ? "#FB7185" : "#A3E635";
+        garnishSvg = `
+          <circle cx="62" cy="22" r="5" fill="${gColor}" fill-opacity="0.35" stroke="${gColor}" stroke-width="1.4"/>
+          <path d="M62,17 Q65,10 70,9" fill="none" stroke="${stroke}" stroke-width="1.2" stroke-linecap="round"/>
+        `;
+      } else if (drink.garnish === "coffee") {
+        garnishSvg = `
+          <ellipse cx="56" cy="21" rx="4.5" ry="2.8" transform="rotate(-20 56 21)" fill="${accentStroke}" fill-opacity="0.3" stroke="${accentStroke}" stroke-width="1.2"/>
+          <ellipse cx="66" cy="24" rx="4.5" ry="2.8" transform="rotate(18 66 24)" fill="${accentStroke}" fill-opacity="0.3" stroke="${accentStroke}" stroke-width="1.2"/>
+        `;
+      } else if (drink.garnish === "pineapple") {
+        garnishSvg = `
+          <path d="M64,12 L68,20 L74,15 L71,24 L62,24 Z" fill="${accentStroke}" fill-opacity="0.3" stroke="${accentStroke}" stroke-width="1.3"/>
+        `;
+      } else if (drink.garnish === "salt") {
+        garnishSvg = `
+          <circle cx="28" cy="25" r="1.2" fill="${accentStroke}"/>
+          <circle cx="31" cy="22" r="1.2" fill="${accentStroke}"/>
+          <circle cx="26" cy="29" r="1.2" fill="${accentStroke}"/>
+        `;
+      }
+
+      return `
+        <div class="w-full h-28 rounded-xl bg-black/45 border border-white/10 flex items-center justify-center relative overflow-hidden mb-4">
+          <div class="w-20 h-20 rounded-full blur-2xl opacity-25 pointer-events-none" style="background:${fill}"></div>
+          <svg viewBox="0 0 100 92" class="w-24 h-24 relative z-10" aria-hidden="true">
+            ${glassSvg}
+            ${garnishSvg}
+          </svg>
+        </div>
+      `;
+    }
+
+    // State (Match All Only)
+    let selectedIngredients = new Set();
+    let searchQuery = "";
+
+    function renderSimpleGroup(containerId, items, activeClasses) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = items.map(item => {
+        const isActive = selectedIngredients.has(item);
+        return `
+          <button 
+            onclick="toggleIngredient('${item.replace(/'/g, "\\'")}')"
+            class="px-3 py-1.5 rounded-full font-mono text-xs transition-all duration-200 border ${
+              isActive
+                ? activeClasses
+                : "bg-white/[0.03] text-gray-300 border-white/10 hover:border-white/30 hover:text-white"
+            }">
+            ${isActive ? "✓ " : ""}${item}
+          </button>
+        `;
+      }).join("");
+    }
+
+function renderMixersGroup() {
+  const container = document.getElementById("group-mixers");
+  container.innerHTML = sortedMixers.map(({ name }) => {
+    const isActive = selectedIngredients.has(name);
+    return `
+      <button 
+        onclick="toggleIngredient('${name.replace(/'/g, "\\'")}')"
+        class="px-3 py-1.5 rounded-full font-mono text-xs transition-all duration-200 border ${
+          isActive
+            ? "bg-sky-400 text-black border-sky-300 font-semibold shadow-lg shadow-sky-400/20"
+            : "bg-white/[0.03] text-gray-300 border-white/10 hover:border-white/30 hover:text-white"
+        }">
+        ${isActive ? "✓ " : ""}${name}
+      </button>
+    `;
+  }).join("");
+}
+
+    function renderAllFilters() {
+      renderSimpleGroup(
+        "group-spirits",
+        ingredientCategories.spirits,
+        "bg-yellow-400 text-black border-yellow-300 font-semibold shadow-lg shadow-yellow-400/20"
+      );
+      renderSimpleGroup(
+        "group-liqueurs",
+        ingredientCategories.liqueurs,
+        "bg-amber-400 text-black border-amber-300 font-semibold shadow-lg shadow-amber-400/20"
+      );
+      renderMixersGroup();
+    }
+
+    window.toggleIngredient = function(item) {
+      if (selectedIngredients.has(item)) {
+        selectedIngredients.delete(item);
+      } else {
+        selectedIngredients.add(item);
+      }
+      renderAllFilters();
+      renderCocktails();
+    };
+
+    document.getElementById("reset-filters").onclick = () => {
+      selectedIngredients.clear();
+      searchQuery = "";
+      document.getElementById("cocktail-search").value = "";
+      renderAllFilters();
+      renderCocktails();
+    };
+
+    document.getElementById("cocktail-search").addEventListener("input", (e) => {
+      searchQuery = e.target.value.trim().toLowerCase();
+      renderCocktails();
+    });
+
+    function renderCocktails() {
+      const selectedArr = Array.from(selectedIngredients);
+
+      const filtered = cocktails.filter(drink => {
+        const allDrinkItems = [...drink.spirits, ...drink.liqueurs, ...drink.mixers];
+
+        // Strict Match All
+        const matchesIngredients =
+          selectedArr.length === 0 || selectedArr.every(sel => allDrinkItems.includes(sel));
+
+        let matchesSearch = true;
+        if (searchQuery) {
+          const haystack = `${drink.name} ${drink.profile} ${drink.notes} ${allDrinkItems.join(" ")}`.toLowerCase();
+          matchesSearch = haystack.includes(searchQuery);
+        }
+
+        return matchesIngredients && matchesSearch;
+      });
+
+      const summaryEl = document.getElementById("result-summary");
+      const activeTagsEl = document.getElementById("active-tags-text");
+
+      if (selectedArr.length === 0 && !searchQuery) {
+        summaryEl.textContent = `Showing all ${cocktails.length} drinks on the menu.`;
+        activeTagsEl.textContent = "";
+      } else {
+        summaryEl.textContent = `Found ${filtered.length} matching drink(s) (Match All).`;
+        activeTagsEl.textContent = selectedArr.length > 0 ? `Requires: ${selectedArr.join(" + ")}` : "";
+      }
+
+      const grid = document.getElementById("cocktail-grid");
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full glass-panel rounded-2xl p-10 text-center">
+            <p class="font-mono text-sm text-gray-300 mb-2">No cocktail includes every selected ingredient.</p>
+            <p class="text-xs text-gray-500">Try removing one ingredient or click Reset All.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(drink => {
+        const spiritBadges = drink.spirits.map(s =>
+          `<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-yellow-400/15 text-yellow-300 border border-yellow-400/30">${s}</span>`
+        ).join("");
+
+        const liqueurBadges = drink.liqueurs.map(l =>
+          `<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-400/10 text-amber-200 border border-amber-400/20">${l}</span>`
+        ).join("");
+
+        const mixerBadges = drink.mixers.map(m =>
+          `<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-sky-400/10 text-sky-200 border border-sky-400/20">${m}</span>`
+        ).join("");
+
+        return `
+          <article class="drink-card rounded-2xl p-5 flex flex-col justify-between">
+            <div>
+              ${renderCocktailIllustration(drink)}
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <span class="font-mono text-[10px] uppercase tracking-widest text-gray-500">${drink.category}</span>
+              </div>
+              <h2 class="text-xl font-semibold text-white tracking-tight">${drink.name}</h2>
+              <p class="font-mono text-[11px] text-yellow-400/80 mt-1">${drink.profile}</p>
+              
+              <div class="flex flex-wrap gap-1.5 mt-3.5">
+                ${spiritBadges}
+                ${liqueurBadges}
+                ${mixerBadges}
+              </div>
+
+              <p class="text-xs text-gray-400 mt-3.5 leading-relaxed">
+                ${drink.notes}
+              </p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-white/10">
+              <details class="group">
+                <summary class="cursor-pointer list-none flex items-center justify-between font-mono text-[11px] text-gray-400 hover:text-yellow-400 transition">
+                  <span>Bartender Specs</span>
+                  <span class="group-open:rotate-180 transition-transform">▾</span>
+                </summary>
+                <p class="mt-2.5 p-2.5 rounded-lg bg-black/50 border border-white/10 font-mono text-[11px] text-gray-300 leading-relaxed">
+                  ${drink.specs}
+                </p>
+              </details>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    renderAllFilters();
+    renderCocktails();
+  </script>
+</body>
+</html>
