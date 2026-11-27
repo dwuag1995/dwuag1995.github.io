@@ -163,40 +163,57 @@
   <main class="relative z-10 flex-grow w-full max-w-5xl mx-auto px-6 pt-36 pb-24">
     
     <!-- Header -->
-    <section class="mb-12 max-w-3xl">
-      <div class="flex items-center gap-3 font-mono text-xs text-yellow-400/90 uppercase tracking-widest mb-3">
-        <span>04 // Mixology & Menu</span>
-        <span class="text-gray-700">•</span>
-        <span id="total-badge" class="text-gray-400">101 Classic & Signature Serves</span>
+    <section class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div class="max-w-2xl">
+        <div class="flex items-center gap-3 font-mono text-xs text-yellow-400/90 uppercase tracking-widest mb-3">
+          <span>04 // Mixology & Menu</span>
+          <span class="text-gray-700">•</span>
+          <span id="mode-badge" class="text-gray-400">Host Stock Setup</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white mb-3">
+          David's Home Bar
+        </h1>
+        <p id="header-subtitle" class="text-base md:text-lg text-gray-300 leading-relaxed font-light">
+          Check off the spirits, liqueurs, and mixers currently in stock.
+        </p>
       </div>
-      <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white mb-4">
-        David's Home Bar
-      </h1>
-      <p class="text-base md:text-lg text-gray-300 leading-relaxed font-light">
-        Stopping by for a drink? Select any combination of spirits, liqueurs, or mixers below to see what can be crafted tonight.
-      </p>
+
+      <!-- 仅在点单模式（Guest Mode）下显示的返回库存设置按钮 -->
+      <div id="guest-header-actions" class="hidden flex-shrink-0 flex items-center gap-2">
+        <button id="copy-share-link" class="px-3.5 py-2 rounded-xl border border-white/15 bg-white/5 text-gray-300 hover:text-white hover:border-white/30 font-mono text-xs transition flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+          <span>Share Menu</span>
+        </button>
+        <button id="edit-stock-btn" class="px-3.5 py-2 rounded-xl border border-yellow-400/40 bg-yellow-400/10 text-yellow-300 hover:bg-yellow-400/20 font-mono text-xs transition flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+          <span>Edit Bar Stock</span>
+        </button>
+      </div>
     </section>
 
-    <!-- Interactive 3-Tier Filter Console (Match All Only) -->
-    <section class="glass-panel rounded-2xl p-6 md:p-8 mb-10 space-y-6">
+    <!-- ===================================================================== -->
+    <!-- STAGE 1: HOST INVENTORY SETUP VIEW (Initial View, No Cards Shown)     -->
+    <!-- ===================================================================== -->
+    <section id="host-setup-view" class="glass-panel rounded-2xl p-6 md:p-8 space-y-6">
       
-      <!-- Top Controls: Search, Match All Badge & Reset -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-white/10">
-        <!-- Search Input -->
-        <div class="relative flex-1 max-w-sm">
-          <input 
-            id="cocktail-search" 
-            type="text" 
-            placeholder="Search cocktail name, flavor, or note..." 
-            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-xs md:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-yellow-400/60 transition"
-          />
+      <!-- Top Controls -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/10">
+        <div class="font-mono text-xs text-gray-300">
+          <span class="text-yellow-400 font-semibold" id="stock-count-label">0</span> ingredients selected
+          <span class="mx-2 text-gray-600">|</span>
+          <span class="text-emerald-400 font-semibold" id="unlock-preview-count">0</span> craftable drinks unlocked
         </div>
 
-        <!-- Match All Indicator & Reset -->
-        <div class="flex flex-wrap items-center gap-3 font-mono text-xs">
-
-          <button id="reset-filters" class="px-3 py-1.5 rounded-lg border border-white/10 text-gray-400 hover:text-yellow-400 hover:border-yellow-400/40 transition">
-            Reset All
+        <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+          <button id="select-all-stock" class="px-3 py-1.5 rounded-lg border border-white/10 text-gray-300 hover:text-white hover:border-white/30 transition">
+            Select Full Bar (101)
+          </button>
+          <button id="clear-all-stock" class="px-3 py-1.5 rounded-lg border border-white/10 text-gray-400 hover:text-rose-400 hover:border-rose-400/40 transition">
+            Clear All
           </button>
         </div>
       </div>
@@ -205,43 +222,108 @@
       <div>
         <div class="flex items-center justify-between mb-2.5">
           <span class="font-mono text-[11px] uppercase tracking-widest text-yellow-400/90">
-            I. Base Spirits
+            I. Base Spirits in Stock
           </span>
         </div>
-        <div id="group-spirits" class="flex flex-wrap gap-2"></div>
+        <div id="host-group-spirits" class="flex flex-wrap gap-2"></div>
       </div>
 
       <!-- Category 2: Liqueurs & Fortified -->
       <div>
         <div class="flex items-center justify-between mb-2.5">
           <span class="font-mono text-[11px] uppercase tracking-widest text-amber-300/80">
-            II. Liqueurs & Vermouth
+            II. Liqueurs & Vermouth in Stock
           </span>
         </div>
-        <div id="group-liqueurs" class="flex flex-wrap gap-2"></div>
+        <div id="host-group-liqueurs" class="flex flex-wrap gap-2"></div>
       </div>
 
-      <!-- Category 3: Mixers, Juices & Sodas (Sorted by Cocktail Count Desc) -->
+      <!-- Category 3: Mixers, Juices & Sodas -->
       <div>
         <div class="flex items-center justify-between mb-2.5">
           <span class="font-mono text-[11px] uppercase tracking-widest text-sky-300/80">
-            III. Juices, Sodas & Mixers
+            III. Juices, Sodas & Mixers in Stock
           </span>
         </div>
-        <div id="group-mixers" class="flex flex-wrap gap-2"></div>
+        <div id="host-group-mixers" class="flex flex-wrap gap-2"></div>
       </div>
 
-      <!-- Active Status Bar -->
-      <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono text-xs text-gray-400">
-        <span id="result-summary">Showing all 101 drinks on the menu.</span>
-        <span id="active-tags-text" class="text-yellow-400/90 truncate max-w-md"></span>
+      <!-- Confirm Button Bar -->
+      <div class="pt-6 border-t border-white/10 flex justify-end">
+        <button id="confirm-stock-btn" class="px-6 py-3 rounded-xl bg-yellow-400 text-black font-mono text-xs md:text-sm font-semibold hover:bg-yellow-300 transition shadow-lg shadow-yellow-400/20 disabled:opacity-40 disabled:cursor-not-allowed">
+          Confirm Stock
+        </button>
       </div>
     </section>
 
-    <!-- Cocktail Cards Grid -->
-    <section id="cocktail-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <!-- Rendered dynamically by JS -->
-    </section>
+    <!-- ===================================================================== -->
+    <!-- STAGE 2: GUEST MENU & TAG FILTER VIEW (Original Search Experience)    -->
+    <!-- ===================================================================== -->
+    <div id="guest-menu-view" class="hidden">
+      
+      <!-- Guest Filter Console -->
+      <section class="glass-panel rounded-2xl p-6 md:p-8 mb-10 space-y-6">
+        
+        <!-- Top Controls: Search & Reset Guest Filter -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-white/10">
+          <div class="relative flex-1 max-w-sm">
+            <input 
+              id="cocktail-search" 
+              type="text" 
+              placeholder="Search drink name, flavor, or note..." 
+              class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-xs md:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-yellow-400/60 transition"
+            />
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3 font-mono text-xs">
+            <button id="reset-guest-filters" class="px-3 py-1.5 rounded-lg border border-white/10 text-gray-400 hover:text-yellow-400 hover:border-yellow-400/40 transition">
+              Show All Available
+            </button>
+          </div>
+        </div>
+
+        <!-- Available Base Spirits -->
+        <div id="guest-section-spirits">
+          <div class="flex items-center justify-between mb-2.5">
+            <span class="font-mono text-[11px] uppercase tracking-widest text-yellow-400/90">
+              I. Filter by Base Spirit
+            </span>
+          </div>
+          <div id="guest-group-spirits" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- Available Liqueurs -->
+        <div id="guest-section-liqueurs">
+          <div class="flex items-center justify-between mb-2.5">
+            <span class="font-mono text-[11px] uppercase tracking-widest text-amber-300/80">
+              II. Filter by Liqueur & Vermouth
+            </span>
+          </div>
+          <div id="guest-group-liqueurs" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- Available Mixers -->
+        <div id="guest-section-mixers">
+          <div class="flex items-center justify-between mb-2.5">
+            <span class="font-mono text-[11px] uppercase tracking-widest text-sky-300/80">
+              III. Filter by Juice, Soda & Mixer
+            </span>
+          </div>
+          <div id="guest-group-mixers" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- Active Status Bar -->
+        <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono text-xs text-gray-400">
+          <span id="result-summary"></span>
+          <span id="active-tags-text" class="text-yellow-400/90 truncate max-w-md"></span>
+        </div>
+      </section>
+
+      <!-- Cocktail Cards Grid -->
+      <section id="cocktail-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Rendered dynamically by JS -->
+      </section>
+    </div>
 
   </main>
 
@@ -306,7 +388,7 @@
   <script async src="https://events.vercount.one/js"></script>
 
   <!-- ===================================================================== -->
-  <!-- 101 CLASSIC COCKTAILS, MINIMAL HAND-DRAWN ART & MATCH-ALL ENGINE      -->
+  <!-- TWO-STAGE ENGINE: STAGE 1 (HOST INVENTORY) -> STAGE 2 (GUEST MENU)    -->
   <!-- ===================================================================== -->
   <script>
     const ingredientCategories = {
@@ -345,7 +427,6 @@
       ]
     };
 
-    // 101 Famous & IBA Cocktails
     const cocktails = [
       // 1-20: Gin Classics
       { name: "Gin & Tonic", category: "Highball", profile: "Crisp • Botanical • Effervescent", glass: "highball", liquid: "#67E8F9", garnish: "citrus", spirits: ["Gin"], liqueurs: [], mixers: ["Tonic Water", "Lemon / Lime Juice"], notes: "London Dry gin lengthened with chilled quinine tonic and a bright lime wedge.", specs: "50ml Gin • 120ml Tonic Water • Lime Wedge" },
@@ -391,7 +472,7 @@
       { name: "Kentucky Buck", category: "Modern Highball", profile: "Berry • Ginger • Bright", glass: "highball", liquid: "#F43F5E", garnish: "citrus", spirits: ["Whisky"], liqueurs: [], mixers: ["Lemon / Lime Juice", "Ginger Beer"], notes: "Bourbon, muddled berry, lemon, and bitters topped with ginger beer.", specs: "50ml Bourbon • 15ml Lemon • Muddled Berry • Top Ginger Beer" },
       { name: "Hot Toddy", category: "Warm Classic", profile: "Soothing • Honey • Lemon", glass: "irish", liquid: "#F59E0B", garnish: "citrus", spirits: ["Whisky"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "Warming blend of whisky, honey, lemon juice, and hot water/tea.", specs: "50ml Whisky • 15ml Honey • 15ml Lemon • 100ml Hot Water" },
 
-      // 41-61: Rum & Multi-Spirit Classics (Including Long Island Iced Tea)
+      // 41-61: Rum & Multi-Spirit Classics
       { name: "Long Island Iced Tea", category: "Contemporary Classics", profile: "Citrus • Coke • High-Octane", glass: "highball", liquid: "#78350F", garnish: "citrus", spirits: ["Vodka", "Gin", "Rum", "Tequila"], liqueurs: ["Cointreau / Triple Sec"], mixers: ["Lemon / Lime Juice", "Coke"], notes: "Four white spirits shaken with Cointreau and fresh lemon juice, lengthened with chilled Coke.", specs: "15ml each Vodka, Gin, White Rum, Tequila, Cointreau • 25ml Lemon Juice • 15ml Syrup • Top Coke" },
       { name: "Daiquiri", category: "The Unforgettables", profile: "Tart • Crisp • Cuban", glass: "coupe", liquid: "#FEF08A", garnish: "citrus", spirits: ["Rum"], liqueurs: [], mixers: ["Lemon / Lime Juice"], notes: "White rum, fresh lime juice, and sugar shaken until ice-cold.", specs: "60ml White Rum • 25ml Fresh Lime Juice • 15ml Syrup" },
       { name: "Mojito", category: "Contemporary Classics", profile: "Mint • Lime • Bubbly", glass: "highball", liquid: "#A7F3D0", garnish: "mint", spirits: ["Rum"], liqueurs: [], mixers: ["Lemon / Lime Juice", "Soda Water"], notes: "Rum, fresh mint, lime, sugar, and crushed ice topped with soda.", specs: "45ml White Rum • 20ml Lime • 6 Mint Sprigs • 15ml Syrup • Soda" },
@@ -463,20 +544,23 @@
       { name: "Hugo Spritz", category: "Spritz Classic", profile: "Elderflower • Mint • Sparkling", glass: "highball", liquid: "#D9F99D", garnish: "mint", spirits: [], liqueurs: ["St-Germain"], mixers: ["Soda Water"], notes: "Elderflower liqueur, fresh mint, lime, and sparkling soda.", specs: "30ml St-Germain • 90ml Prosecco • 30ml Soda • Mint & Lime" }
     ];
 
-    // Sort Category III (Mixers) by number of matching cocktails descending
     function getSortedMixers() {
       const counts = {};
       ingredientCategories.mixers.forEach(m => {
         counts[m] = cocktails.filter(c => c.mixers.includes(m)).length;
       });
       return [...ingredientCategories.mixers]
-        .sort((a, b) => counts[b] - counts[a] || a.localeCompare(b))
-        .map(name => ({ name, count: counts[name] }));
+        .sort((a, b) => counts[b] - counts[a] || a.localeCompare(b));
     }
 
-    const sortedMixers = getSortedMixers();
+    const sortedMixersList = getSortedMixers();
+    const allKnownIngredients = [
+      ...ingredientCategories.spirits,
+      ...ingredientCategories.liqueurs,
+      ...sortedMixersList
+    ];
 
-    // Minimalist Hand-Drawn SVG Artwork Generator per Cocktail
+    // Minimalist Hand-Drawn SVG Artwork Generator
     function renderCocktailIllustration(drink) {
       const stroke = "#E5E7EB";
       const accentStroke = "#FACC15";
@@ -512,7 +596,6 @@
           <rect x="37" y="72" width="26" height="6" rx="2" fill="${stroke}" fill-opacity="0.25" stroke="${stroke}" stroke-width="1.4"/>
         `;
       } else {
-        // rocks
         glassSvg = `
           <path d="M31,32 H69 L66,76 H34 Z" fill="${fill}" fill-opacity="0.32" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/>
           <rect x="39" y="42" width="12" height="12" rx="2" transform="rotate(-10 45 48)" fill="none" stroke="${stroke}" stroke-width="1.1" opacity="0.65"/>
@@ -565,17 +648,164 @@
       `;
     }
 
-    // State (Match All Only)
-    let selectedIngredients = new Set();
-    let searchQuery = "";
+    // =====================================================================
+    // STATE MANAGEMENT
+    // =====================================================================
+    const STORAGE_KEY = "david_homebar_stock_v1";
+    let barInventory = new Set();        // Stage 1: Host's available stock
+    let guestSelectedTags = new Set();   // Stage 2: Guest's tag search filters
+    let guestSearchQuery = "";
+    let currentView = "host";            // "host" | "guest"
 
-    function renderSimpleGroup(containerId, items, activeClasses) {
+    // Helper: Get all drinks 100% craftable from barInventory
+    function getCraftableMenu() {
+      return cocktails.filter(drink => {
+        const required = [...drink.spirits, ...drink.liqueurs, ...drink.mixers];
+        return required.every(item => barInventory.has(item));
+      });
+    }
+
+    // =====================================================================
+    // STAGE 1: HOST INVENTORY SETUP LOGIC
+    // =====================================================================
+    function renderHostPills(containerId, items, activeClasses) {
       const container = document.getElementById(containerId);
       container.innerHTML = items.map(item => {
-        const isActive = selectedIngredients.has(item);
+        const inStock = barInventory.has(item);
         return `
           <button 
-            onclick="toggleIngredient('${item.replace(/'/g, "\\'")}')"
+            onclick="toggleHostStock('${item.replace(/'/g, "\\'")}')"
+            class="px-3 py-1.5 rounded-full font-mono text-xs transition-all duration-200 border ${
+              inStock
+                ? activeClasses
+                : "bg-white/[0.03] text-gray-300 border-white/10 hover:border-white/30 hover:text-white"
+            }">
+            ${inStock ? "✓ " : "+ "}${item}
+          </button>
+        `;
+      }).join("");
+    }
+
+    function renderHostView() {
+      renderHostPills(
+        "host-group-spirits",
+        ingredientCategories.spirits,
+        "bg-yellow-400 text-black border-yellow-300 font-semibold shadow-lg shadow-yellow-400/20"
+      );
+      renderHostPills(
+        "host-group-liqueurs",
+        ingredientCategories.liqueurs,
+        "bg-amber-400 text-black border-amber-300 font-semibold shadow-lg shadow-amber-400/20"
+      );
+      renderHostPills(
+        "host-group-mixers",
+        sortedMixersList,
+        "bg-sky-400 text-black border-sky-300 font-semibold shadow-lg shadow-sky-400/20"
+      );
+
+      const craftableCount = getCraftableMenu().length;
+      document.getElementById("stock-count-label").textContent = barInventory.size;
+      document.getElementById("unlock-preview-count").textContent = craftableCount;
+      document.getElementById("confirm-stock-btn").disabled = barInventory.size === 0;
+    }
+
+    window.toggleHostStock = function(item) {
+      if (barInventory.has(item)) {
+        barInventory.delete(item);
+      } else {
+        barInventory.add(item);
+      }
+      renderHostView();
+    };
+
+    document.getElementById("select-all-stock").onclick = () => {
+      allKnownIngredients.forEach(item => barInventory.add(item));
+      renderHostView();
+    };
+
+    document.getElementById("clear-all-stock").onclick = () => {
+      barInventory.clear();
+      localStorage.removeItem(STORAGE_KEY);
+      renderHostView();
+    };
+
+    document.getElementById("confirm-stock-btn").onclick = () => {
+      if (barInventory.size === 0) return;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(barInventory)));
+      switchToGuestView();
+    };
+
+    // =====================================================================
+    // VIEW SWITCHING
+    // =====================================================================
+    function switchToHostView() {
+      currentView = "host";
+      document.getElementById("host-setup-view").classList.remove("hidden");
+      document.getElementById("guest-menu-view").classList.add("hidden");
+      document.getElementById("guest-header-actions").classList.add("hidden");
+
+      document.getElementById("mode-badge").textContent = "Step 1: Host Stock Setup";
+      document.getElementById("header-subtitle").textContent =
+        "Check off the spirits, liqueurs, and mixers currently in stock to generate tonight's curated menu for your guests.";
+
+      renderHostView();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function switchToGuestView() {
+      currentView = "guest";
+      guestSelectedTags.clear();
+      guestSearchQuery = "";
+      document.getElementById("cocktail-search").value = "";
+
+      document.getElementById("host-setup-view").classList.add("hidden");
+      document.getElementById("guest-menu-view").classList.remove("hidden");
+      document.getElementById("guest-header-actions").classList.remove("hidden");
+
+      const menuCount = getCraftableMenu().length;
+      document.getElementById("mode-badge").textContent = `Tonight's Menu • ${menuCount} Craftable Drinks`;
+      document.getElementById("header-subtitle").textContent =
+        "Tap any spirit, liqueur, or mixer below to find drinks made with it.";
+
+      renderGuestFilters();
+      renderGuestCocktails();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    document.getElementById("edit-stock-btn").onclick = () => {
+      switchToHostView();
+    };
+
+    document.getElementById("copy-share-link").onclick = () => {
+      const encoded = encodeURIComponent(JSON.stringify(Array.from(barInventory)));
+      const url = `${window.location.origin}${window.location.pathname}?stock=${encoded}`;
+      navigator.clipboard.writeText(url).then(() => {
+        const btn = document.getElementById("copy-share-link");
+        const span = btn.querySelector("span");
+        const oldText = span.textContent;
+        span.textContent = "Link Copied!";
+        setTimeout(() => { span.textContent = oldText; }, 2000);
+      });
+    };
+
+    // =====================================================================
+    // STAGE 2: GUEST TAG-SEARCH MENU LOGIC (Original Match-All Tag Filter)
+    // =====================================================================
+    function renderGuestCategory(sectionId, containerId, availableItems, activeClasses) {
+      const section = document.getElementById(sectionId);
+      const container = document.getElementById(containerId);
+
+      if (availableItems.length === 0) {
+        section.classList.add("hidden");
+        return;
+      }
+      section.classList.remove("hidden");
+
+      container.innerHTML = availableItems.map(item => {
+        const isActive = guestSelectedTags.has(item);
+        return `
+          <button 
+            onclick="toggleGuestTag('${item.replace(/'/g, "\\'")}')"
             class="px-3 py-1.5 rounded-full font-mono text-xs transition-all duration-200 border ${
               isActive
                 ? activeClasses
@@ -587,98 +817,103 @@
       }).join("");
     }
 
-    function renderMixersGroup() {
-      const container = document.getElementById("group-mixers");
-      container.innerHTML = sortedMixers.map(({ name }) => {
-        const isActive = selectedIngredients.has(name);
-        return `
-          <button 
-            onclick="toggleIngredient('${name.replace(/'/g, "\\'")}')"
-            class="px-3 py-1.5 rounded-full font-mono text-xs transition-all duration-200 border ${
-              isActive
-                ? "bg-sky-400 text-black border-sky-300 font-semibold shadow-lg shadow-sky-400/20"
-                : "bg-white/[0.03] text-gray-300 border-white/10 hover:border-white/30 hover:text-white"
-            }">
-            ${isActive ? "✓ " : ""}${name}
-          </button>
-        `;
-      }).join("");
-    }
+    function renderGuestFilters() {
+      // Only show tags that exist in the host's current barInventory
+      const availSpirits = ingredientCategories.spirits.filter(s => barInventory.has(s));
+      const availLiqueurs = ingredientCategories.liqueurs.filter(l => barInventory.has(l));
+      const availMixers = sortedMixersList.filter(m => barInventory.has(m));
 
-    function renderAllFilters() {
-      renderSimpleGroup(
-        "group-spirits",
-        ingredientCategories.spirits,
+      renderGuestCategory(
+        "guest-section-spirits",
+        "guest-group-spirits",
+        availSpirits,
         "bg-yellow-400 text-black border-yellow-300 font-semibold shadow-lg shadow-yellow-400/20"
       );
-      renderSimpleGroup(
-        "group-liqueurs",
-        ingredientCategories.liqueurs,
+      renderGuestCategory(
+        "guest-section-liqueurs",
+        "guest-group-liqueurs",
+        availLiqueurs,
         "bg-amber-400 text-black border-amber-300 font-semibold shadow-lg shadow-amber-400/20"
       );
-      renderMixersGroup();
+      renderGuestCategory(
+        "guest-section-mixers",
+        "guest-group-mixers",
+        availMixers,
+        "bg-sky-400 text-black border-sky-300 font-semibold shadow-lg shadow-sky-400/20"
+      );
     }
 
-    window.toggleIngredient = function(item) {
-      if (selectedIngredients.has(item)) {
-        selectedIngredients.delete(item);
+    window.toggleGuestTag = function(item) {
+      if (guestSelectedTags.has(item)) {
+        guestSelectedTags.delete(item);
       } else {
-        selectedIngredients.add(item);
+        guestSelectedTags.add(item);
       }
-      renderAllFilters();
-      renderCocktails();
+      renderGuestFilters();
+      renderGuestCocktails();
     };
 
-    document.getElementById("reset-filters").onclick = () => {
-      selectedIngredients.clear();
-      searchQuery = "";
+    document.getElementById("reset-guest-filters").onclick = () => {
+      guestSelectedTags.clear();
+      guestSearchQuery = "";
       document.getElementById("cocktail-search").value = "";
-      renderAllFilters();
-      renderCocktails();
+      renderGuestFilters();
+      renderGuestCocktails();
     };
 
     document.getElementById("cocktail-search").addEventListener("input", (e) => {
-      searchQuery = e.target.value.trim().toLowerCase();
-      renderCocktails();
+      guestSearchQuery = e.target.value.trim().toLowerCase();
+      renderGuestCocktails();
     });
 
-    function renderCocktails() {
-      const selectedArr = Array.from(selectedIngredients);
+    function renderGuestCocktails() {
+      const availableMenu = getCraftableMenu();
+      const selectedArr = Array.from(guestSelectedTags);
 
-      const filtered = cocktails.filter(drink => {
+      // Original Tag-Search Mode (Match All selected tags within tonight's available menu)
+      const filtered = availableMenu.filter(drink => {
         const allDrinkItems = [...drink.spirits, ...drink.liqueurs, ...drink.mixers];
 
-        // Strict Match All
-        const matchesIngredients =
+        const matchesTags =
           selectedArr.length === 0 || selectedArr.every(sel => allDrinkItems.includes(sel));
 
         let matchesSearch = true;
-        if (searchQuery) {
+        if (guestSearchQuery) {
           const haystack = `${drink.name} ${drink.profile} ${drink.notes} ${allDrinkItems.join(" ")}`.toLowerCase();
-          matchesSearch = haystack.includes(searchQuery);
+          matchesSearch = haystack.includes(guestSearchQuery);
         }
 
-        return matchesIngredients && matchesSearch;
+        return matchesTags && matchesSearch;
       });
 
       const summaryEl = document.getElementById("result-summary");
       const activeTagsEl = document.getElementById("active-tags-text");
 
-      if (selectedArr.length === 0 && !searchQuery) {
-        summaryEl.textContent = `Showing all ${cocktails.length} drinks on the menu.`;
+      if (selectedArr.length === 0 && !guestSearchQuery) {
+        summaryEl.textContent = `Showing all ${availableMenu.length} craftable drink(s) from tonight's stock.`;
         activeTagsEl.textContent = "";
       } else {
-        summaryEl.textContent = `Found ${filtered.length} matching drink(s) (Match All).`;
-        activeTagsEl.textContent = selectedArr.length > 0 ? `Requires: ${selectedArr.join(" + ")}` : "";
+        summaryEl.textContent = `Found ${filtered.length} of ${availableMenu.length} available drink(s).`;
+        activeTagsEl.textContent = selectedArr.length > 0 ? `Includes: ${selectedArr.join(" + ")}` : "";
       }
 
       const grid = document.getElementById("cocktail-grid");
 
+      if (availableMenu.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full glass-panel rounded-2xl p-10 text-center">
+            <p class="font-mono text-sm text-gray-300 mb-2">No complete recipes can be made from the current stock.</p>
+            <p class="text-xs text-gray-500">Click "Edit Bar Stock" at the top right to add more mixers or spirits.</p>
+          </div>
+        `;
+        return;
+      }
+
       if (filtered.length === 0) {
         grid.innerHTML = `
           <div class="col-span-full glass-panel rounded-2xl p-10 text-center">
-            <p class="font-mono text-sm text-gray-300 mb-2">No cocktail includes every selected ingredient.</p>
-            <p class="text-xs text-gray-500">Try removing one ingredient or click Reset All.</p>
+            <p class="font-mono text-sm text-gray-300 mb-2">No drink on tonight's menu combines all selected tags.</p>
+            <p class="text-xs text-gray-500">Try unchecking one tag or click "Show All Available".</p>
           </div>
         `;
         return;
@@ -734,8 +969,40 @@
       }).join("");
     }
 
-    renderAllFilters();
-    renderCocktails();
+    // =====================================================================
+    // INITIALIZATION (Always starts on Host Setup unless ?stock= is in URL)
+    // =====================================================================
+    (function init() {
+      const params = new URLSearchParams(window.location.search);
+      const sharedStockParam = params.get("stock");
+
+      if (sharedStockParam) {
+        try {
+          const parsed = JSON.parse(decodeURIComponent(sharedStockParam));
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            parsed.forEach(item => {
+              if (allKnownIngredients.includes(item)) barInventory.add(item);
+            });
+            if (barInventory.size > 0) {
+              switchToGuestView();
+              return;
+            }
+          }
+        } catch (e) { /* fallback to host setup */ }
+      }
+
+      // Pre-fill last saved stock in Host Setup for convenience, but stay on Stage 1
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        if (Array.isArray(saved)) {
+          saved.forEach(item => {
+            if (allKnownIngredients.includes(item)) barInventory.add(item);
+          });
+        }
+      } catch (e) { /* ignore */ }
+
+      switchToHostView();
+    })();
   </script>
 </body>
 </html>
