@@ -10,6 +10,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   
   <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 exifr 用于自动读取照片信息 -->
+<!-- 确保这行存在，或者换成下面这个备用 CDN -->
+  <script src="https://unpkg.com/exifr/dist/full.umd.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -268,15 +271,6 @@
       }));
     }
 
-    function makePilgrimage(destId, work, count) {
-      return Array.from({ length: count }, (_, i) => ({
-        work: work,
-        title: `${work} — Scene ${i+1}`,
-        filmSrc: `assets/travel/${destId}/film-${i+1}.jpg`,
-        realSrc: `assets/travel/${destId}/real-${i+1}.jpg`
-      }));
-    }
-
     const cityData = [
       // 欧洲
       { id: "at-vienna", country: "Austria", name: "Vienna", sub: "Vienna", coord: [16.37, 48.21], travel: 3, pilg: [{work:"Before Sunrise", count:9}] },
@@ -284,27 +278,8 @@
       { id: "cz-prague", country: "Czechia", name: "Prague", sub: "Prague", coord: [14.42, 50.08], travel: 3, pilg: [{work:"Mission: Impossible", count:9}, {work:"007 Casino Royale", count:3}, {work:"Jason Bourne", count:6}] },
       { id: "cz-ck", country: "Czechia", name: "Cesky Krumlov", sub: "South Bohemia", coord: [14.32, 48.81], travel: 2, pilg: [] },
       { id: "gb-london", country: "United Kingdom", name: "London", sub: "England", coord: [-0.12, 51.50], travel: 3, pilg: [{work:"Sherlock", count:3}] },
-{ 
-  id: "gb-cambridge", 
-  country: "United Kingdom", 
-  name: "Cambridge", 
-  sub: "England", 
-  coord: [0.12, 52.20], 
-  travel: 2, 
-  pilg: [] 
-},
-{ 
-  id: "hu-budapest", 
-  country: "Hungary", 
-  name: "Budapest", 
-  sub: "Central Hungary", 
-  coord: [19.04, 47.49], 
-  travel: 3, 
-  pilg: [
-    { work: "Black Widow", count: 3 },
-    { work: "The Day of the Jackal", count: 6 }
-  ] 
-},
+      { id: "gb-cambridge", country: "United Kingdom", name: "Cambridge", sub: "England", coord: [0.12, 52.20], travel: 2, pilg: [] },
+      { id: "hu-budapest", country: "Hungary", name: "Budapest", sub: "Central Hungary", coord: [19.04, 47.49], travel: 3, pilg: [{ work: "Black Widow", count: 3 }, { work: "The Day of the Jackal", count: 6 }] },
       
       // 中东 & 亚洲
       { id: "ae-abu", country: "United Arab Emirates", name: "Abu Dhabi", sub: "Abu Dhabi", coord: [54.37, 24.45], travel: 3, pilg: [] },
@@ -344,6 +319,7 @@
       { id: "hk-hongkong", country: "China", name: "Hong Kong", sub: "Hong Kong", coord: [114.16, 22.31], travel: 0, pilg: [{work:"無間道", count:3}] }
     ];
 
+    // 【核心修复】：跨电影连续编号
     const destinations = cityData.map(d => {
       const dest = {
         id: d.id,
@@ -353,8 +329,18 @@
         travelPhotos: makeTravelPhotos(d.id, d.name, d.travel),
         pilgrimages: []
       };
+      
+      let globalIndex = 1; // 用于跨电影累加图片编号
       d.pilg.forEach(p => {
-        dest.pilgrimages.push(...makePilgrimage(d.id, p.work, p.count));
+        for (let i = 0; i < p.count; i++) {
+          dest.pilgrimages.push({
+            work: p.work,
+            title: `${p.work} — Scene ${i + 1}`, // 显示文字仍然从1开始
+            filmSrc: `assets/travel/${d.id}/film-${globalIndex}.jpg`, // 真实路径连续递增
+            realSrc: `assets/travel/${d.id}/real-${globalIndex}.jpg`
+          });
+          globalIndex++;
+        }
       });
       return dest;
     });
@@ -485,14 +471,15 @@
             <h3 class="font-mono text-xs text-gray-400 uppercase tracking-widest mb-6">Travel Frames</h3>
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               ${dest.travelPhotos.map(photo => `
-                <article onclick="openLightbox('${photo.src}', '${photo.title}', '${photo.date}', '${photo.camera}', '${photo.lens}', '${photo.aperture}', '${photo.iso}')" 
+                <article onclick="openLightbox('${photo.src}', '${photo.title}')" ...
                   class="photo-card group cursor-pointer rounded-2xl overflow-hidden bg-white/5 border border-white/10">
                   <div class="aspect-[4/3] bg-slate-800 relative overflow-hidden">
                     <img src="${photo.src}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWUyOTNiIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM2YjcyODAiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=='" />
                   </div>
+                  
                   <div class="p-4 flex justify-between items-center font-mono text-[11px] text-gray-400">
-                    <span>${photo.date}</span>
-                    <span>${photo.camera}</span>
+                    <span id="thumb-date-${photo.id}">Reading...</span>
+                    <span id="thumb-cam-${photo.id}">Reading...</span>
                   </div>
                 </article>
               `).join("")}
@@ -529,7 +516,43 @@
 
       html += `</div>`;
       container.innerHTML = html;
-      bindCompareSliders();
+      // 异步读取缩略图的 EXIF 信息并更新到卡片上
+      dest.travelPhotos.forEach(photo => {
+        exifr.parse(photo.src, ['DateTimeOriginal', 'CreateDate', 'Make', 'Model']).then(exif => {
+          const dateEl = document.getElementById(`thumb-date-${photo.id}`);
+          const camEl = document.getElementById(`thumb-cam-${photo.id}`);
+          if (!exif) throw new Error("No exif");
+
+          if (dateEl) {
+            if (exif.DateTimeOriginal || exif.CreateDate) {
+              const d = exif.DateTimeOriginal || exif.CreateDate;
+              dateEl.textContent = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, '0') + "-" + String(d.getDate()).padStart(2, '0');
+            } else {
+              dateEl.textContent = "Unknown Date";
+            }
+          }
+          
+          if (camEl) {
+            if (exif.Make || exif.Model) {
+              let make = exif.Make || "";
+              let model = exif.Model || "";
+              // 把 "Apple iPhone 16 Pro" 简写成 "iPhone 16 Pro"
+              let camStr = model.startsWith(make) ? model : (make + " " + model).trim();
+              camEl.textContent = camStr.replace("Apple ", "");
+            } else {
+              camEl.textContent = "Unknown Cam";
+            }
+          }
+        }).catch(e => {
+          const dateEl = document.getElementById(`thumb-date-${photo.id}`);
+          const camEl = document.getElementById(`thumb-cam-${photo.id}`);
+          if (dateEl) dateEl.textContent = "No EXIF";
+          if (camEl) camEl.textContent = "-";
+        });
+      });
+      // =====================================================================
+
+      bindCompareSliders(); // 这是原本最后一行
     }
 
     function bindCompareSliders() {
@@ -547,21 +570,128 @@
     }
 
     // =====================================================================
-    // 4. Lightbox 放大逻辑
+    // 4. Lightbox 放大逻辑（带防卡死保护和 EXIF 读取）
     // =====================================================================
-    window.openLightbox = function(src, title, date, camera, lens, aperture, iso) {
+    window.openLightbox = function(src, title) {
+      // 1. 立即弹出窗口
       document.getElementById("lb-title").textContent = title;
-      document.getElementById("lb-date").textContent = date;
-      document.getElementById("lb-camera").textContent = camera;
-      document.getElementById("lb-lens").textContent = lens;
-      document.getElementById("lb-aperture").textContent = aperture;
-      document.getElementById("lb-iso").textContent = iso;
+      const dateEl = document.getElementById("lb-date");
+      const cameraEl = document.getElementById("lb-camera");
+      const lensEl = document.getElementById("lb-lens");
+      const apertureEl = document.getElementById("lb-aperture");
+      const isoEl = document.getElementById("lb-iso");
+      
+      dateEl.textContent = "Reading...";
+      cameraEl.textContent = "Reading...";
+      lensEl.textContent = "Reading...";
+      apertureEl.textContent = "Reading...";
+      isoEl.textContent = "Reading...";
       document.getElementById("lb-path").textContent = src;
 
       document.getElementById("lb-media").innerHTML = `
         <img src="${src}" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl pointer-events-auto" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWUyOTNiIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM2YjcyODAiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD48L3N2Zz4='" />
       `;
       document.getElementById("photo-lightbox").classList.remove("hidden");
+
+      // 2. 定义一个失败/超时的兜底显示
+      const showError = (msg) => {
+        dateEl.textContent = msg;
+        cameraEl.textContent = "-";
+        lensEl.textContent = "-";
+        apertureEl.textContent = "-";
+        isoEl.textContent = "-";
+      };
+
+      // 3. 检查解析库是否加载成功
+      if (typeof exifr === 'undefined') {
+        console.error("EXIF 库未加载！请检查网络或 CDN。");
+        showError("Library Missing");
+        return;
+      }
+
+      // 4. 读取 EXIF（加入超时机制防止卡死）
+      let isFinished = false;
+      
+      // 设置 1.5 秒超时
+      const timeoutId = setTimeout(() => {
+        if (!isFinished) {
+          isFinished = true;
+          console.warn("读取超时，可能是照片没有 EXIF 或网络问题");
+          showError("No EXIF Data");
+        }
+      }, 1500);
+
+      exifr.parse(src, ['DateTimeOriginal', 'Make', 'Model', 'FNumber', 'FocalLength', 'ISO', 'LensModel']).then(exif => {
+        if (isFinished) return;
+        isFinished = true;
+        clearTimeout(timeoutId);
+
+        if (!exif || Object.keys(exif).length === 0) {
+          showError("No EXIF Data");
+          return;
+        }
+
+        // 1. 日期（不变）
+        let dateStr = "Unknown";
+        if (exif.DateTimeOriginal || exif.CreateDate) {
+          const d = exif.DateTimeOriginal || exif.CreateDate;
+          dateStr = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, '0') + "-" + String(d.getDate()).padStart(2, '0');
+        }
+
+        // 2. 相机（不变）
+        let cameraStr = "Unknown";
+        if (exif.Make || exif.Model) {
+          cameraStr = ((exif.Make || "") + " " + (exif.Model || "")).trim();
+        }
+
+        // --- 修改这里 ---
+        let isApple = (exif.Make || "").toLowerCase().includes("apple");
+        let lensStr = "Unknown Lens";
+
+        if (isApple) {
+            lensStr = "35mm"; // 如果是 iPhone，直接暴力写死 35mm
+        } else {
+            // 相机（索尼等）正常读取等效或物理焦距
+            let focal = exif.FocalLengthIn35mmFormat || exif.FocalLength;
+            let focalStr = focal ? Math.round(focal) + "mm " : "";
+            let lensModel = exif.LensModel || "Unknown Lens";
+            
+            if (focalStr && !lensModel.includes("mm")) {
+                lensStr = focalStr + lensModel;
+            } else {
+                lensStr = lensModel;
+            }
+        }
+        
+        if (lensStr.length > 32) {
+           lensStr = lensStr.substring(0, 32) + "...";
+        }
+        // -----------------
+
+        // 4. 光圈（修复长串小数）
+        let apertureStr = "Unknown";
+        if (exif.FNumber) {
+           let roundedF = Math.round(exif.FNumber * 10) / 10;
+           apertureStr = "f/" + roundedF;
+        }
+
+        // 5. ISO
+        let isoStr = exif.ISO ? "ISO " + exif.ISO : "Unknown";
+
+        // 更新到页面
+        dateEl.textContent = dateStr;
+        cameraEl.textContent = cameraStr;
+        lensEl.textContent = lensStr.trim();
+        apertureEl.textContent = apertureStr;
+        isoEl.textContent = isoStr;
+
+      }).catch(err => {
+        if (isFinished) return;
+        isFinished = true;
+        clearTimeout(timeoutId);
+        console.warn("EXIF 解析失败: ", err);
+        showError("No EXIF Data");
+      });
     };
 
     window.closeLightbox = function(event, force = false) {
